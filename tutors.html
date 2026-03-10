@@ -1,0 +1,1155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Book a free one-on-one tutoring session with a Build-a-Web peer tutor. View tutor profiles and real-time availability." />
+  <title>Tutors | Build-a-Web</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    /* ── Tutor Cards ────────────────────────────────── */
+    .tutors-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+    }
+    @media(max-width:900px){ .tutors-grid { grid-template-columns: 1fr; } }
+
+    .tutor-card {
+      background: var(--white);
+      border-radius: var(--radius-large);
+      box-shadow: var(--card-shadow);
+      overflow: hidden;
+      transition: all var(--transition);
+    }
+    .tutor-card:hover { transform: translateY(-5px); box-shadow: var(--card-shadow-hover); }
+
+    .tutor-card-header {
+      padding: 28px 28px 0;
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
+    }
+
+    .tutor-avatar {
+      width: 68px;
+      height: 68px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-serif);
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: white;
+      flex-shrink: 0;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+    }
+
+    .tutor-card-info { flex: 1; }
+    .tutor-name { font-family: var(--font-serif); font-size: 1.25rem; font-weight: 600; color: var(--charcoal); margin-bottom: 2px; }
+    .tutor-grade { font-size: 0.8rem; color: var(--gray-mid); font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; }
+    .tutor-title { font-size: 0.9rem; color: var(--charcoal); font-weight: 500; }
+
+    .tutor-rating {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 6px;
+      font-size: 0.8rem;
+      color: var(--gray-mid);
+    }
+    .tutor-rating .stars { color: #e8a87c; letter-spacing: 1px; }
+
+    .tutor-card-body { padding: 20px 28px; }
+
+    .tutor-bio {
+      font-size: 0.9rem;
+      color: var(--gray-dark);
+      line-height: 1.65;
+      margin-bottom: 16px;
+    }
+
+    .tutor-specialties {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-bottom: 20px;
+    }
+    .specialty-tag {
+      font-size: 0.76rem;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+      background: rgba(138,171,138,0.12);
+      color: var(--sage);
+      letter-spacing: 0.02em;
+    }
+    .specialty-tag.lavender { background: rgba(155,142,196,0.12); color: var(--lavender); }
+    .specialty-tag.rose { background: rgba(201,128,138,0.12); color: var(--dusty-rose); }
+    .specialty-tag.peach { background: rgba(232,168,124,0.15); color: #b86a30; }
+
+    /* ── Week Availability Preview ──────────────────── */
+    .avail-preview {
+      margin-bottom: 20px;
+    }
+    .avail-preview-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--gray-mid);
+      margin-bottom: 9px;
+    }
+    .avail-week-row {
+      display: flex;
+      gap: 6px;
+    }
+    .avail-day-pip {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+    }
+    .avail-day-pip .day-label {
+      font-size: 0.68rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--gray-mid);
+    }
+    .avail-dot {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.65rem;
+      font-weight: 700;
+    }
+    .avail-dot.available {
+      background: rgba(138,171,138,0.18);
+      color: #3a6a3a;
+      border: 1.5px solid rgba(138,171,138,0.5);
+    }
+    .avail-dot.available.lavender { background: rgba(155,142,196,0.15); color: #5a4a8a; border-color: rgba(155,142,196,0.45); }
+    .avail-dot.available.rose { background: rgba(201,128,138,0.12); color: #8a3a4a; border-color: rgba(201,128,138,0.4); }
+    .avail-dot.available.peach { background: rgba(232,168,124,0.15); color: #a05020; border-color: rgba(232,168,124,0.45); }
+    .avail-dot.unavailable {
+      background: rgba(0,0,0,0.04);
+      color: #ccc;
+      border: 1.5px solid rgba(0,0,0,0.07);
+    }
+
+    .tutor-card-footer {
+      padding: 0 28px 24px;
+    }
+
+    /* ── Booking Modal ──────────────────────────────── */
+    .booking-modal .modal { max-width: 620px; }
+
+    .booking-tutor-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 20px 32px;
+      background: rgba(0,0,0,0.02);
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+    }
+    .booking-tutor-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-serif);
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: white;
+    }
+    .booking-tutor-name { font-weight: 600; font-size: 1rem; color: var(--charcoal); }
+    .booking-tutor-title { font-size: 0.82rem; color: var(--gray-mid); }
+
+    .booking-section-label {
+      font-size: 0.76rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--gray-mid);
+      margin-bottom: 10px;
+    }
+
+    /* Day Pills */
+    .day-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+    .day-pill {
+      padding: 8px 16px;
+      border-radius: var(--radius-pill);
+      border: 1.5px solid rgba(138,171,138,0.4);
+      background: rgba(138,171,138,0.07);
+      color: var(--gray-dark);
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+    .day-pill:hover { border-color: var(--sage); color: var(--sage); background: rgba(138,171,138,0.1); }
+    .day-pill.active { background: var(--sage); color: white; border-color: var(--sage); }
+    .day-pill.lavender-pill { border-color: rgba(155,142,196,0.4); background: rgba(155,142,196,0.07); }
+    .day-pill.lavender-pill:hover, .day-pill.lavender-pill.active { background: var(--lavender); color: white; border-color: var(--lavender); }
+    .day-pill.rose-pill { border-color: rgba(201,128,138,0.4); background: rgba(201,128,138,0.07); }
+    .day-pill.rose-pill:hover, .day-pill.rose-pill.active { background: var(--dusty-rose); color: white; border-color: var(--dusty-rose); }
+    .day-pill.peach-pill { border-color: rgba(232,168,124,0.4); background: rgba(232,168,124,0.07); }
+    .day-pill.peach-pill:hover, .day-pill.peach-pill.active { background: var(--peach); color: white; border-color: var(--peach); }
+
+    /* Time Slot Grid */
+    .time-slots-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+      gap: 8px;
+      margin-bottom: 24px;
+      min-height: 44px;
+    }
+    .time-slot {
+      padding: 10px 6px;
+      border-radius: 10px;
+      border: 1.5px solid rgba(138,171,138,0.35);
+      background: rgba(138,171,138,0.07);
+      color: var(--gray-dark);
+      font-size: 0.82rem;
+      font-weight: 500;
+      text-align: center;
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+    .time-slot:hover:not(.booked) { border-color: var(--sage); background: rgba(138,171,138,0.15); }
+    .time-slot.selected { background: var(--sage); color: white; border-color: var(--sage); }
+    .time-slot.selected.lavender { background: var(--lavender); border-color: var(--lavender); }
+    .time-slot.selected.rose { background: var(--dusty-rose); border-color: var(--dusty-rose); }
+    .time-slot.selected.peach { background: var(--peach); border-color: var(--peach); }
+    .time-slot.booked {
+      background: rgba(0,0,0,0.035);
+      border-color: rgba(0,0,0,0.08);
+      color: #bbb;
+      cursor: not-allowed;
+      text-decoration: line-through;
+      font-size: 0.78rem;
+    }
+
+    .time-slot-hint {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 20px;
+      font-size: 0.78rem;
+      color: var(--gray-mid);
+    }
+    .time-slot-hint .hint-dot {
+      display: inline-block;
+      width: 10px; height: 10px;
+      border-radius: 3px;
+      margin-right: 5px;
+      vertical-align: middle;
+    }
+    .hint-dot.open { background: rgba(138,171,138,0.5); border: 1px solid rgba(138,171,138,0.8); }
+    .hint-dot.taken { background: rgba(0,0,0,0.07); border: 1px solid rgba(0,0,0,0.1); }
+    .hint-dot.chosen { background: var(--sage); }
+
+    /* Duration Toggle */
+    .duration-toggle {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .duration-btn {
+      flex: 1;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1.5px solid rgba(0,0,0,0.1);
+      background: transparent;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--gray-dark);
+      cursor: pointer;
+      text-align: center;
+      transition: all var(--transition);
+    }
+    .duration-btn.active { border-color: var(--sage); background: rgba(138,171,138,0.1); color: var(--sage); }
+    .duration-btn.active.lavender { border-color: var(--lavender); background: rgba(155,142,196,0.1); color: var(--lavender); }
+    .duration-btn.active.rose { border-color: var(--dusty-rose); background: rgba(201,128,138,0.1); color: var(--dusty-rose); }
+    .duration-btn.active.peach { border-color: var(--peach); background: rgba(232,168,124,0.1); color: #b86a30; }
+
+    .no-day-selected {
+      text-align: center;
+      padding: 16px;
+      color: var(--gray-mid);
+      font-size: 0.88rem;
+      background: rgba(0,0,0,0.02);
+      border-radius: 10px;
+      border: 1.5px dashed rgba(0,0,0,0.08);
+    }
+
+    /* ── Intro Banner ───────────────────────────────── */
+    .tutors-intro-banner {
+      background: var(--white);
+      border-radius: var(--radius-large);
+      box-shadow: var(--card-shadow);
+      padding: 32px 36px;
+      display: flex;
+      gap: 24px;
+      align-items: center;
+      margin-bottom: 48px;
+    }
+    @media(max-width:640px){ .tutors-intro-banner { flex-direction: column; text-align: center; padding: 24px; } }
+    .tutors-intro-icon {
+      width: 64px; height: 64px;
+      border-radius: var(--radius-card);
+      background: rgba(138,171,138,0.12);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.6rem; color: var(--sage);
+      flex-shrink: 0;
+    }
+    .tutors-intro-text h3 { font-family: var(--font-serif); font-size: 1.2rem; font-weight: 600; margin-bottom: 6px; }
+    .tutors-intro-text p { font-size: 0.9rem; color: var(--gray-dark); line-height: 1.65; margin: 0; }
+
+    .avail-legend {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-bottom: 32px;
+      font-size: 0.8rem;
+      color: var(--gray-mid);
+    }
+    .legend-item { display: flex; align-items: center; gap: 7px; }
+    .legend-dot {
+      width: 22px; height: 22px; border-radius: 6px; display: flex;
+      align-items: center; justify-content: center; font-size: 0.55rem; font-weight: 700;
+    }
+    .legend-dot.avail { background: rgba(138,171,138,0.18); border: 1.5px solid rgba(138,171,138,0.5); color: #3a6a3a; }
+    .legend-dot.busy  { background: rgba(0,0,0,0.04); border: 1.5px solid rgba(0,0,0,0.07); color: #ccc; }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav" role="navigation" aria-label="Main navigation">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5"/>
+        <path d="M12 3C12 3 8 7 8 12C8 17 12 21 12 21" stroke="currentColor" stroke-width="1.5"/>
+        <path d="M12 3C12 3 16 7 16 12C16 17 12 21 12 21" stroke="currentColor" stroke-width="1.5"/>
+        <line x1="3" y1="12" x2="21" y2="12" stroke="currentColor" stroke-width="1.5"/>
+        <line x1="4.5" y1="7.5" x2="19.5" y2="7.5" stroke="currentColor" stroke-width="1.5"/>
+        <line x1="4.5" y1="16.5" x2="19.5" y2="16.5" stroke="currentColor" stroke-width="1.5"/>
+      </svg>
+      Build-a-Web
+    </a>
+    <ul class="nav-links" role="list">
+      <li><a href="index.html" class="nav-link">Home</a></li>
+      <li><a href="schedule.html" class="nav-link">Schedule</a></li>
+      <li><a href="tutors.html" class="nav-link active">Tutors</a></li>
+      <li><a href="dashboard.html" class="nav-link">Dashboard</a></li>
+      <li><a href="resources.html" class="nav-link">Resources</a></li>
+      <li><a href="about.html" class="nav-link">About</a></li>
+      <li><a href="resources.html" class="nav-link nav-cta">Start Learning</a></li>
+    </ul>
+    <button class="nav-hamburger" aria-label="Open menu"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+<div class="nav-overlay"></div>
+<nav class="nav-drawer">
+  <a href="index.html" class="drawer-link">Home</a>
+  <a href="schedule.html" class="drawer-link">Schedule</a>
+  <a href="tutors.html" class="drawer-link">Tutors</a>
+  <a href="dashboard.html" class="drawer-link">Dashboard</a>
+  <a href="resources.html" class="drawer-link">Resources</a>
+  <a href="about.html" class="drawer-link">About</a>
+</nav>
+
+
+<!-- HERO -->
+<section class="hero hero-pattern-lines" style="min-height:50vh" aria-label="Tutors hero">
+  <div class="hero-bg">
+    <div class="hero-bg-pattern"></div>
+    <div class="blob blob-1" style="background:#d4e8d4"></div>
+    <div class="blob blob-2" style="background:#ede8f5"></div>
+    <div class="blob blob-3" style="background:#fceef5"></div>
+  </div>
+  <canvas class="particle-canvas" id="tutors-particles" aria-hidden="true"></canvas>
+  <div class="container hero-content" style="width:100%">
+    <div style="padding:120px 0 60px; max-width:640px">
+      <div class="hero-text">
+        <span class="hero-label">Peer Tutoring</span>
+        <h1 class="hero-title">Meet Your Tutors</h1>
+        <p class="hero-subtitle">Book a free one-on-one session with a peer tutor. All tutors are fellow students who have mastered these skills and love helping others learn.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<svg class="wave-divider" viewBox="0 0 1440 60" preserveAspectRatio="none" aria-hidden="true">
+  <path d="M0,20 C360,60 1080,0 1440,40 L1440,60 L0,60 Z" fill="#fdf6ec"/>
+</svg>
+
+
+<!-- MAIN CONTENT -->
+<section class="section bg-cream" aria-labelledby="tutors-heading">
+  <div class="container">
+
+    <!-- Intro Banner -->
+    <div class="tutors-intro-banner reveal">
+      <div class="tutors-intro-icon" aria-hidden="true">
+        <i class="fa-solid fa-calendar-check"></i>
+      </div>
+      <div class="tutors-intro-text">
+        <h3>How One-on-One Sessions Work</h3>
+        <p>Choose a tutor below, pick an available time slot on their schedule, and fill in your details. Sessions are 30 or 60 minutes and held over video call — completely free for all students. Green slots are open; grayed slots are already booked.</p>
+      </div>
+    </div>
+
+    <!-- Legend -->
+    <div class="avail-legend" aria-label="Availability key">
+      <span class="legend-item">
+        <span class="legend-dot avail" aria-hidden="true">✓</span>
+        Available this week
+      </span>
+      <span class="legend-item">
+        <span class="legend-dot busy" aria-hidden="true">–</span>
+        Unavailable
+      </span>
+    </div>
+
+    <div class="section-header" style="text-align:left; margin-bottom:32px">
+      <span class="section-label">Our Team</span>
+      <h2 class="section-title" id="tutors-heading" style="text-align:left; margin-bottom:0">Peer Tutors</h2>
+    </div>
+
+    <div class="tutors-grid">
+
+      <!-- ── TUTOR 1: Maya Chen ──────────────────────── -->
+      <article class="tutor-card reveal" aria-labelledby="tutor-maya-name">
+        <div class="tutor-card-header">
+          <div class="tutor-avatar" style="background:linear-gradient(135deg,#8aab8a,#6a8b6a)" aria-hidden="true">M</div>
+          <div class="tutor-card-info">
+            <div class="tutor-name" id="tutor-maya-name">Maya Chen</div>
+            <div class="tutor-grade">11th Grade · Jefferson High</div>
+            <div class="tutor-title">HTML &amp; CSS Specialist</div>
+            <div class="tutor-rating">
+              <span class="stars" aria-label="5 stars">★★★★★</span>
+              <span>4.9 · 38 sessions</span>
+            </div>
+          </div>
+        </div>
+        <div class="tutor-card-body">
+          <p class="tutor-bio">Maya has been building websites since 8th grade and loves helping beginners feel confident with HTML and CSS. Her sessions are relaxed, fun, and packed with practical tips — she won't let you leave confused.</p>
+          <div class="tutor-specialties" aria-label="Specialties">
+            <span class="specialty-tag">HTML Structure</span>
+            <span class="specialty-tag">CSS Basics</span>
+            <span class="specialty-tag">Forms</span>
+            <span class="specialty-tag">Accessibility</span>
+          </div>
+          <div class="avail-preview" aria-label="This week's availability">
+            <div class="avail-preview-label">This Week (Mar 9–15)</div>
+            <div class="avail-week-row" role="list">
+              <div class="avail-day-pip" role="listitem">
+                <span class="day-label">Mo</span>
+                <div class="avail-dot available" title="Available Monday" aria-label="Monday: available"><i class="fa-solid fa-check" style="font-size:0.6rem"></i></div>
+              </div>
+              <div class="avail-day-pip" role="listitem">
+                <span class="day-label">Tu</span>
+                <div class="avail-dot unavailable" title="Unavailable Tuesday" aria-label="Tuesday: unavailable">–</div>
+              </div>
+              <div class="avail-day-pip" role="listitem">
+                <span class="day-label">We</span>
+                <div class="avail-dot available" title="Available Wednesday" aria-label="Wednesday: available"><i class="fa-solid fa-check" style="font-size:0.6rem"></i></div>
+              </div>
+              <div class="avail-day-pip" role="listitem">
+                <span class="day-label">Th</span>
+                <div class="avail-dot unavailable" title="Unavailable Thursday" aria-label="Thursday: unavailable">–</div>
+              </div>
+              <div class="avail-day-pip" role="listitem">
+                <span class="day-label">Fr</span>
+                <div class="avail-dot unavailable" title="Unavailable Friday" aria-label="Friday: unavailable">–</div>
+              </div>
+              <div class="avail-day-pip" role="listitem">
+                <span class="day-label">Sa</span>
+                <div class="avail-dot available" title="Available Saturday" aria-label="Saturday: available"><i class="fa-solid fa-check" style="font-size:0.6rem"></i></div>
+              </div>
+              <div class="avail-day-pip" role="listitem">
+                <span class="day-label">Su</span>
+                <div class="avail-dot unavailable" title="Unavailable Sunday" aria-label="Sunday: unavailable">–</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="tutor-card-footer">
+          <button class="btn btn-primary" style="width:100%" onclick="openBookingModal('maya')" aria-haspopup="dialog">
+            <i class="fa-solid fa-calendar-plus" aria-hidden="true"></i>
+            Book a 1-on-1 with Maya
+          </button>
+        </div>
+      </article>
+
+      <!-- ── TUTOR 2: Jordan Park ───────────────────── -->
+      <article class="tutor-card reveal reveal-delay-1" aria-labelledby="tutor-jordan-name">
+        <div class="tutor-card-header">
+          <div class="tutor-avatar" style="background:linear-gradient(135deg,#9b8ec4,#7b6ea4)" aria-hidden="true">J</div>
+          <div class="tutor-card-info">
+            <div class="tutor-name" id="tutor-jordan-name">Jordan Park</div>
+            <div class="tutor-grade">12th Grade · Roosevelt Academy</div>
+            <div class="tutor-title">CSS Layout &amp; Accessibility Expert</div>
+            <div class="tutor-rating">
+              <span class="stars" aria-label="5 stars">★★★★★</span>
+              <span>4.8 · 51 sessions</span>
+            </div>
+          </div>
+        </div>
+        <div class="tutor-card-body">
+          <p class="tutor-bio">Jordan specializes in responsive layouts and web accessibility. As a future CS major, they love breaking down complex Flexbox and Grid concepts into simple, digestible mental models. Methodical and patient.</p>
+          <div class="tutor-specialties" aria-label="Specialties">
+            <span class="specialty-tag lavender">Flexbox</span>
+            <span class="specialty-tag lavender">CSS Grid</span>
+            <span class="specialty-tag lavender">Responsive Design</span>
+            <span class="specialty-tag lavender">ARIA &amp; A11y</span>
+          </div>
+          <div class="avail-preview" aria-label="This week's availability">
+            <div class="avail-preview-label">This Week (Mar 9–15)</div>
+            <div class="avail-week-row" role="list">
+              <div class="avail-day-pip" role="listitem">
+                <span class="day-label">Mo</span>
+                <div class="avail-dot unavailable" aria-label="Monday: unavailable">–</div>
+              </div>
+              <div class="avail-day-pip" role="listitem">
+                <span class="day-label">Tu</span>
+                <div class="avail-dot available lavender" aria-label="Tuesday: available"><i class="fa-solid fa-check" style="font-size:0.6rem"></i></div>
+              </div>
+              <div class="avail-day-pip" role="listitem">
+                <span class="day-label">We</span>
+                <div class="avail-dot unavailable" aria-label="Wednesday: unavailable">–</div>
+              </div>
+              <div class="avail-day-pip" role="listitem">
+                <span class="day-label">Th</span>
+                <div class="avail-dot available lavender" aria-label="Thursday: available"><i class="fa-solid fa-check" style="font-size:0.6rem"></i></div>
+              </div>
+              <div class="avail-day-pip" role="listitem">
+                <span class="day-label">Fr</span>
+                <div class="avail-dot unavailable" aria-label="Friday: unavailable">–</div>
+              </div>
+              <div class="avail-day-pip" role="listitem">
+                <span class="day-label">Sa</span>
+                <div class="avail-dot unavailable" aria-label="Saturday: unavailable">–</div>
+              </div>
+              <div class="avail-day-pip" role="listitem">
+                <span class="day-label">Su</span>
+                <div class="avail-dot available lavender" aria-label="Sunday: available"><i class="fa-solid fa-check" style="font-size:0.6rem"></i></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="tutor-card-footer">
+          <button class="btn btn-primary" style="width:100%;background:var(--lavender);box-shadow:0 4px 14px rgba(155,142,196,0.35)" onclick="openBookingModal('jordan')" aria-haspopup="dialog">
+            <i class="fa-solid fa-calendar-plus" aria-hidden="true"></i>
+            Book a 1-on-1 with Jordan
+          </button>
+        </div>
+      </article>
+
+      <!-- ── TUTOR 3: Priya Nair ────────────────────── -->
+      <article class="tutor-card reveal" aria-labelledby="tutor-priya-name">
+        <div class="tutor-card-header">
+          <div class="tutor-avatar" style="background:linear-gradient(135deg,#c9808a,#a86070)" aria-hidden="true">P</div>
+          <div class="tutor-card-info">
+            <div class="tutor-name" id="tutor-priya-name">Priya Nair</div>
+            <div class="tutor-grade">12th Grade · Lincoln Prep</div>
+            <div class="tutor-title">CSS Animations &amp; Design Systems</div>
+            <div class="tutor-rating">
+              <span class="stars" aria-label="5 stars">★★★★★</span>
+              <span>5.0 · 29 sessions</span>
+            </div>
+          </div>
+        </div>
+        <div class="tutor-card-body">
+          <p class="tutor-bio">Priya combines a love of visual design with web development to teach CSS animations, transitions, and custom properties. She's enthusiastic, creative, and makes every concept click with real, beautiful examples.</p>
+          <div class="tutor-specialties" aria-label="Specialties">
+            <span class="specialty-tag rose">CSS Animations</span>
+            <span class="specialty-tag rose">Transitions</span>
+            <span class="specialty-tag rose">Design Systems</span>
+            <span class="specialty-tag rose">Custom Properties</span>
+          </div>
+          <div class="avail-preview" aria-label="This week's availability">
+            <div class="avail-preview-label">This Week (Mar 9–15)</div>
+            <div class="avail-week-row" role="list">
+              <div class="avail-day-pip" role="listitem">
+                <span class="day-label">Mo</span>
+                <div class="avail-dot available rose" aria-label="Monday: available"><i class="fa-solid fa-check" style="font-size:0.6rem"></i></div>
+              </div>
+              <div class="avail-day-pip" role="listitem">
+                <span class="day-label">Tu</span>
+                <div class="avail-dot unavailable" aria-label="Tuesday: unavailable">–</div>
+              </div>
+              <div class="avail-day-pip" role="listitem">
+                <span class="day-label">We</span>
+                <div class="avail-dot unavailable" aria-label="Wednesday: unavailable">–</div>
+              </div>
+              <div class="avail-day-pip" role="listitem">
+                <span class="day-label">Th</span>
+                <div class="avail-dot unavailable" aria-label="Thursday: unavailable">–</div>
+              </div>
+              <div class="avail-day-pip" role="listitem">
+                <span class="day-label">Fr</span>
+                <div class="avail-dot available rose" aria-label="Friday: available"><i class="fa-solid fa-check" style="font-size:0.6rem"></i></div>
+              </div>
+              <div class="avail-day-pip" role="listitem">
+                <span class="day-label">Sa</span>
+                <div class="avail-dot available rose" aria-label="Saturday: available"><i class="fa-solid fa-check" style="font-size:0.6rem"></i></div>
+              </div>
+              <div class="avail-day-pip" role="listitem">
+                <span class="day-label">Su</span>
+                <div class="avail-dot unavailable" aria-label="Sunday: unavailable">–</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="tutor-card-footer">
+          <button class="btn btn-primary" style="width:100%;background:var(--dusty-rose);box-shadow:0 4px 14px rgba(201,128,138,0.35)" onclick="openBookingModal('priya')" aria-haspopup="dialog">
+            <i class="fa-solid fa-calendar-plus" aria-hidden="true"></i>
+            Book a 1-on-1 with Priya
+          </button>
+        </div>
+      </article>
+
+      <!-- ── TUTOR 4: Alex Rivera ───────────────────── -->
+      <article class="tutor-card reveal reveal-delay-1" aria-labelledby="tutor-alex-name">
+        <div class="tutor-card-header">
+          <div class="tutor-avatar" style="background:linear-gradient(135deg,#e8a87c,#c8885c)" aria-hidden="true">A</div>
+          <div class="tutor-card-info">
+            <div class="tutor-name" id="tutor-alex-name">Alex Rivera</div>
+            <div class="tutor-grade">11th Grade · Westbrook High</div>
+            <div class="tutor-title">JavaScript &amp; DOM Specialist</div>
+            <div class="tutor-rating">
+              <span class="stars" aria-label="5 stars">★★★★★</span>
+              <span>4.9 · 44 sessions</span>
+            </div>
+          </div>
+        </div>
+        <div class="tutor-card-body">
+          <p class="tutor-bio">Alex is a self-taught JavaScript enthusiast who loves demystifying the DOM, async patterns, and API calls. Patient and methodical, they're great at debugging together — you'll learn more from errors than solutions.</p>
+          <div class="tutor-specialties" aria-label="Specialties">
+            <span class="specialty-tag peach">DOM Manipulation</span>
+            <span class="specialty-tag peach">Events &amp; Listeners</span>
+            <span class="specialty-tag peach">Fetch &amp; APIs</span>
+            <span class="specialty-tag peach">Async / Await</span>
+          </div>
+          <div class="avail-preview" aria-label="This week's availability">
+            <div class="avail-preview-label">This Week (Mar 9–15)</div>
+            <div class="avail-week-row" role="list">
+              <div class="avail-day-pip" role="listitem">
+                <span class="day-label">Mo</span>
+                <div class="avail-dot unavailable" aria-label="Monday: unavailable">–</div>
+              </div>
+              <div class="avail-day-pip" role="listitem">
+                <span class="day-label">Tu</span>
+                <div class="avail-dot unavailable" aria-label="Tuesday: unavailable">–</div>
+              </div>
+              <div class="avail-day-pip" role="listitem">
+                <span class="day-label">We</span>
+                <div class="avail-dot available peach" aria-label="Wednesday: available"><i class="fa-solid fa-check" style="font-size:0.6rem"></i></div>
+              </div>
+              <div class="avail-day-pip" role="listitem">
+                <span class="day-label">Th</span>
+                <div class="avail-dot available peach" aria-label="Thursday: available"><i class="fa-solid fa-check" style="font-size:0.6rem"></i></div>
+              </div>
+              <div class="avail-day-pip" role="listitem">
+                <span class="day-label">Fr</span>
+                <div class="avail-dot unavailable" aria-label="Friday: unavailable">–</div>
+              </div>
+              <div class="avail-day-pip" role="listitem">
+                <span class="day-label">Sa</span>
+                <div class="avail-dot available peach" aria-label="Saturday: available"><i class="fa-solid fa-check" style="font-size:0.6rem"></i></div>
+              </div>
+              <div class="avail-day-pip" role="listitem">
+                <span class="day-label">Su</span>
+                <div class="avail-dot unavailable" aria-label="Sunday: unavailable">–</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="tutor-card-footer">
+          <button class="btn btn-primary" style="width:100%;background:var(--peach);box-shadow:0 4px 14px rgba(232,168,124,0.4);color:#3a1a00" onclick="openBookingModal('alex')" aria-haspopup="dialog">
+            <i class="fa-solid fa-calendar-plus" aria-hidden="true"></i>
+            Book a 1-on-1 with Alex
+          </button>
+        </div>
+      </article>
+
+    </div><!-- /tutors-grid -->
+  </div>
+</section>
+
+
+<!-- ── BOOKING MODALS (one per tutor) ───────────────────────────── -->
+
+<!-- Maya -->
+<div id="modal-book-maya" class="modal-overlay booking-modal" role="dialog" aria-modal="true" aria-labelledby="book-maya-title" aria-hidden="true">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="book-maya-title">Book a 1-on-1 Session</h3>
+      <button class="modal-close" aria-label="Close modal"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
+    </div>
+    <div class="booking-tutor-header">
+      <div class="booking-tutor-avatar" style="background:linear-gradient(135deg,#8aab8a,#6a8b6a)" aria-hidden="true">M</div>
+      <div>
+        <div class="booking-tutor-name">Maya Chen</div>
+        <div class="booking-tutor-title">HTML &amp; CSS Specialist · 11th Grade</div>
+      </div>
+    </div>
+    <div class="modal-body">
+      <div id="maya-booking-form">
+        <p class="booking-section-label">1. Pick a Day</p>
+        <div class="day-pills" role="group" aria-label="Available days for Maya">
+          <button class="day-pill" data-tutor="maya" data-day="Mon Mar 9">Mon, Mar 9</button>
+          <button class="day-pill" data-tutor="maya" data-day="Wed Mar 11">Wed, Mar 11</button>
+          <button class="day-pill" data-tutor="maya" data-day="Sat Mar 14">Sat, Mar 14</button>
+        </div>
+
+        <p class="booking-section-label">2. Pick a Time Slot</p>
+        <div class="time-slot-hint" aria-hidden="true">
+          <span><span class="hint-dot open"></span>Open</span>
+          <span><span class="hint-dot taken"></span>Already booked</span>
+          <span><span class="hint-dot chosen"></span>Your selection</span>
+        </div>
+        <div id="maya-slots" class="time-slots-grid">
+          <div class="no-day-selected">Select a day above to see available times</div>
+        </div>
+
+        <p class="booking-section-label">3. Session Duration</p>
+        <div class="duration-toggle" role="group" aria-label="Session duration">
+          <button class="duration-btn active" data-tutor="maya" data-dur="30">30 min<br><span style="font-size:0.75rem;opacity:0.7">Quick help / single topic</span></button>
+          <button class="duration-btn" data-tutor="maya" data-dur="60">60 min<br><span style="font-size:0.75rem;opacity:0.7">Deep dive / full review</span></button>
+        </div>
+
+        <p class="booking-section-label">4. Your Details</p>
+        <form class="register-form" id="form-maya" novalidate>
+          <div class="form-group">
+            <label for="maya-name">Your Name</label>
+            <input type="text" id="maya-name" placeholder="Full name" required />
+          </div>
+          <div class="form-group">
+            <label for="maya-email">Email Address</label>
+            <input type="email" id="maya-email" placeholder="you@school.edu" required />
+          </div>
+          <div class="form-group">
+            <label for="maya-grade">Grade</label>
+            <select id="maya-grade">
+              <option value="">Select grade</option>
+              <option>9th Grade</option><option>10th Grade</option><option>11th Grade</option><option>12th Grade</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="maya-topic">What do you need help with?</label>
+            <textarea id="maya-topic" rows="3" placeholder="e.g. I'm confused about how CSS specificity works and why my styles aren't applying..." style="width:100%;resize:vertical;font-family:var(--font-sans);font-size:0.9rem;padding:10px 14px;border:1.5px solid rgba(0,0,0,0.12);border-radius:10px;outline:none;transition:border var(--transition)" required></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary" style="width:100%">
+            <i class="fa-solid fa-calendar-check" aria-hidden="true"></i>
+            Confirm Booking
+          </button>
+          <div class="form-success" id="maya-success">
+            <i class="fa-solid fa-check-circle" aria-hidden="true"></i>
+            You're booked with Maya! Check your email for a confirmation and video call link.
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Jordan -->
+<div id="modal-book-jordan" class="modal-overlay booking-modal" role="dialog" aria-modal="true" aria-labelledby="book-jordan-title" aria-hidden="true">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="book-jordan-title">Book a 1-on-1 Session</h3>
+      <button class="modal-close" aria-label="Close modal"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
+    </div>
+    <div class="booking-tutor-header">
+      <div class="booking-tutor-avatar" style="background:linear-gradient(135deg,#9b8ec4,#7b6ea4)" aria-hidden="true">J</div>
+      <div>
+        <div class="booking-tutor-name">Jordan Park</div>
+        <div class="booking-tutor-title">CSS Layout &amp; Accessibility Expert · 12th Grade</div>
+      </div>
+    </div>
+    <div class="modal-body">
+      <div id="jordan-booking-form">
+        <p class="booking-section-label">1. Pick a Day</p>
+        <div class="day-pills" role="group" aria-label="Available days for Jordan">
+          <button class="day-pill lavender-pill" data-tutor="jordan" data-day="Tue Mar 10">Tue, Mar 10</button>
+          <button class="day-pill lavender-pill" data-tutor="jordan" data-day="Thu Mar 12">Thu, Mar 12</button>
+          <button class="day-pill lavender-pill" data-tutor="jordan" data-day="Sun Mar 15">Sun, Mar 15</button>
+        </div>
+
+        <p class="booking-section-label">2. Pick a Time Slot</p>
+        <div class="time-slot-hint" aria-hidden="true">
+          <span><span class="hint-dot open" style="background:rgba(155,142,196,0.3);border-color:rgba(155,142,196,0.6)"></span>Open</span>
+          <span><span class="hint-dot taken"></span>Already booked</span>
+          <span><span class="hint-dot chosen" style="background:var(--lavender)"></span>Your selection</span>
+        </div>
+        <div id="jordan-slots" class="time-slots-grid">
+          <div class="no-day-selected">Select a day above to see available times</div>
+        </div>
+
+        <p class="booking-section-label">3. Session Duration</p>
+        <div class="duration-toggle" role="group" aria-label="Session duration">
+          <button class="duration-btn active" data-tutor="jordan" data-dur="30">30 min<br><span style="font-size:0.75rem;opacity:0.7">Quick help / single topic</span></button>
+          <button class="duration-btn" data-tutor="jordan" data-dur="60">60 min<br><span style="font-size:0.75rem;opacity:0.7">Deep dive / full review</span></button>
+        </div>
+
+        <p class="booking-section-label">4. Your Details</p>
+        <form class="register-form" id="form-jordan" novalidate>
+          <div class="form-group">
+            <label for="jordan-name">Your Name</label>
+            <input type="text" id="jordan-name" placeholder="Full name" required />
+          </div>
+          <div class="form-group">
+            <label for="jordan-email">Email Address</label>
+            <input type="email" id="jordan-email" placeholder="you@school.edu" required />
+          </div>
+          <div class="form-group">
+            <label for="jordan-grade">Grade</label>
+            <select id="jordan-grade">
+              <option value="">Select grade</option>
+              <option>9th Grade</option><option>10th Grade</option><option>11th Grade</option><option>12th Grade</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="jordan-topic">What do you need help with?</label>
+            <textarea id="jordan-topic" rows="3" placeholder="e.g. I keep getting confused about when to use Flexbox vs Grid for my layouts..." style="width:100%;resize:vertical;font-family:var(--font-sans);font-size:0.9rem;padding:10px 14px;border:1.5px solid rgba(0,0,0,0.12);border-radius:10px;outline:none;transition:border var(--transition)" required></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary" style="width:100%;background:var(--lavender);box-shadow:0 4px 14px rgba(155,142,196,0.35)">
+            <i class="fa-solid fa-calendar-check" aria-hidden="true"></i>
+            Confirm Booking
+          </button>
+          <div class="form-success" id="jordan-success">
+            <i class="fa-solid fa-check-circle" aria-hidden="true"></i>
+            You're booked with Jordan! Check your email for a confirmation and video call link.
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Priya -->
+<div id="modal-book-priya" class="modal-overlay booking-modal" role="dialog" aria-modal="true" aria-labelledby="book-priya-title" aria-hidden="true">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="book-priya-title">Book a 1-on-1 Session</h3>
+      <button class="modal-close" aria-label="Close modal"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
+    </div>
+    <div class="booking-tutor-header">
+      <div class="booking-tutor-avatar" style="background:linear-gradient(135deg,#c9808a,#a86070)" aria-hidden="true">P</div>
+      <div>
+        <div class="booking-tutor-name">Priya Nair</div>
+        <div class="booking-tutor-title">CSS Animations &amp; Design Systems · 12th Grade</div>
+      </div>
+    </div>
+    <div class="modal-body">
+      <div id="priya-booking-form">
+        <p class="booking-section-label">1. Pick a Day</p>
+        <div class="day-pills" role="group" aria-label="Available days for Priya">
+          <button class="day-pill rose-pill" data-tutor="priya" data-day="Mon Mar 9">Mon, Mar 9</button>
+          <button class="day-pill rose-pill" data-tutor="priya" data-day="Fri Mar 13">Fri, Mar 13</button>
+          <button class="day-pill rose-pill" data-tutor="priya" data-day="Sat Mar 14">Sat, Mar 14</button>
+        </div>
+
+        <p class="booking-section-label">2. Pick a Time Slot</p>
+        <div class="time-slot-hint" aria-hidden="true">
+          <span><span class="hint-dot open" style="background:rgba(201,128,138,0.2);border-color:rgba(201,128,138,0.5)"></span>Open</span>
+          <span><span class="hint-dot taken"></span>Already booked</span>
+          <span><span class="hint-dot chosen" style="background:var(--dusty-rose)"></span>Your selection</span>
+        </div>
+        <div id="priya-slots" class="time-slots-grid">
+          <div class="no-day-selected">Select a day above to see available times</div>
+        </div>
+
+        <p class="booking-section-label">3. Session Duration</p>
+        <div class="duration-toggle" role="group" aria-label="Session duration">
+          <button class="duration-btn active" data-tutor="priya" data-dur="30">30 min<br><span style="font-size:0.75rem;opacity:0.7">Quick help / single topic</span></button>
+          <button class="duration-btn" data-tutor="priya" data-dur="60">60 min<br><span style="font-size:0.75rem;opacity:0.7">Deep dive / full review</span></button>
+        </div>
+
+        <p class="booking-section-label">4. Your Details</p>
+        <form class="register-form" id="form-priya" novalidate>
+          <div class="form-group">
+            <label for="priya-name">Your Name</label>
+            <input type="text" id="priya-name" placeholder="Full name" required />
+          </div>
+          <div class="form-group">
+            <label for="priya-email">Email Address</label>
+            <input type="email" id="priya-email" placeholder="you@school.edu" required />
+          </div>
+          <div class="form-group">
+            <label for="priya-grade">Grade</label>
+            <select id="priya-grade">
+              <option value="">Select grade</option>
+              <option>9th Grade</option><option>10th Grade</option><option>11th Grade</option><option>12th Grade</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="priya-topic">What do you need help with?</label>
+            <textarea id="priya-topic" rows="3" placeholder="e.g. I want to add a smooth fade-in animation to my hero section but can't get the timing right..." style="width:100%;resize:vertical;font-family:var(--font-sans);font-size:0.9rem;padding:10px 14px;border:1.5px solid rgba(0,0,0,0.12);border-radius:10px;outline:none;transition:border var(--transition)" required></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary" style="width:100%;background:var(--dusty-rose);box-shadow:0 4px 14px rgba(201,128,138,0.35)">
+            <i class="fa-solid fa-calendar-check" aria-hidden="true"></i>
+            Confirm Booking
+          </button>
+          <div class="form-success" id="priya-success">
+            <i class="fa-solid fa-check-circle" aria-hidden="true"></i>
+            You're booked with Priya! Check your email for a confirmation and video call link.
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Alex -->
+<div id="modal-book-alex" class="modal-overlay booking-modal" role="dialog" aria-modal="true" aria-labelledby="book-alex-title" aria-hidden="true">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="book-alex-title">Book a 1-on-1 Session</h3>
+      <button class="modal-close" aria-label="Close modal"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
+    </div>
+    <div class="booking-tutor-header">
+      <div class="booking-tutor-avatar" style="background:linear-gradient(135deg,#e8a87c,#c8885c)" aria-hidden="true">A</div>
+      <div>
+        <div class="booking-tutor-name">Alex Rivera</div>
+        <div class="booking-tutor-title">JavaScript &amp; DOM Specialist · 11th Grade</div>
+      </div>
+    </div>
+    <div class="modal-body">
+      <div id="alex-booking-form">
+        <p class="booking-section-label">1. Pick a Day</p>
+        <div class="day-pills" role="group" aria-label="Available days for Alex">
+          <button class="day-pill peach-pill" data-tutor="alex" data-day="Wed Mar 11">Wed, Mar 11</button>
+          <button class="day-pill peach-pill" data-tutor="alex" data-day="Thu Mar 12">Thu, Mar 12</button>
+          <button class="day-pill peach-pill" data-tutor="alex" data-day="Sat Mar 14">Sat, Mar 14</button>
+        </div>
+
+        <p class="booking-section-label">2. Pick a Time Slot</p>
+        <div class="time-slot-hint" aria-hidden="true">
+          <span><span class="hint-dot open" style="background:rgba(232,168,124,0.2);border-color:rgba(232,168,124,0.55)"></span>Open</span>
+          <span><span class="hint-dot taken"></span>Already booked</span>
+          <span><span class="hint-dot chosen" style="background:var(--peach)"></span>Your selection</span>
+        </div>
+        <div id="alex-slots" class="time-slots-grid">
+          <div class="no-day-selected">Select a day above to see available times</div>
+        </div>
+
+        <p class="booking-section-label">3. Session Duration</p>
+        <div class="duration-toggle" role="group" aria-label="Session duration">
+          <button class="duration-btn active" data-tutor="alex" data-dur="30">30 min<br><span style="font-size:0.75rem;opacity:0.7">Quick help / single topic</span></button>
+          <button class="duration-btn" data-tutor="alex" data-dur="60">60 min<br><span style="font-size:0.75rem;opacity:0.7">Deep dive / full review</span></button>
+        </div>
+
+        <p class="booking-section-label">4. Your Details</p>
+        <form class="register-form" id="form-alex" novalidate>
+          <div class="form-group">
+            <label for="alex-name">Your Name</label>
+            <input type="text" id="alex-name" placeholder="Full name" required />
+          </div>
+          <div class="form-group">
+            <label for="alex-email">Email Address</label>
+            <input type="email" id="alex-email" placeholder="you@school.edu" required />
+          </div>
+          <div class="form-group">
+            <label for="alex-grade">Grade</label>
+            <select id="alex-grade">
+              <option value="">Select grade</option>
+              <option>9th Grade</option><option>10th Grade</option><option>11th Grade</option><option>12th Grade</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="alex-topic">What do you need help with?</label>
+            <textarea id="alex-topic" rows="3" placeholder="e.g. I don't understand how addEventListener works and why my click handler only fires once..." style="width:100%;resize:vertical;font-family:var(--font-sans);font-size:0.9rem;padding:10px 14px;border:1.5px solid rgba(0,0,0,0.12);border-radius:10px;outline:none;transition:border var(--transition)" required></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary" style="width:100%;background:var(--peach);box-shadow:0 4px 14px rgba(232,168,124,0.4);color:#3a1a00">
+            <i class="fa-solid fa-calendar-check" aria-hidden="true"></i>
+            Confirm Booking
+          </button>
+          <div class="form-success" id="alex-success">
+            <i class="fa-solid fa-check-circle" aria-hidden="true"></i>
+            You're booked with Alex! Check your email for a confirmation and video call link.
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- BOOKING LOGIC -->
+<script>
+  // ── Tutor Availability Data ──────────────────────────────────────
+  const tutorAvailability = {
+    maya: {
+      color: 'sage',
+      schedule: {
+        'Mon Mar 9':  { slots: ['4:00 PM','4:30 PM','5:00 PM','5:30 PM'], booked: ['4:30 PM'] },
+        'Wed Mar 11': { slots: ['4:00 PM','4:30 PM','5:00 PM','5:30 PM'], booked: ['5:00 PM'] },
+        'Sat Mar 14': { slots: ['10:00 AM','10:30 AM','11:00 AM','11:30 AM','12:00 PM','12:30 PM'], booked: ['11:30 AM'] },
+      }
+    },
+    jordan: {
+      color: 'lavender',
+      schedule: {
+        'Tue Mar 10': { slots: ['3:30 PM','4:00 PM','4:30 PM','5:00 PM'], booked: ['4:00 PM'] },
+        'Thu Mar 12': { slots: ['3:30 PM','4:00 PM','4:30 PM','5:00 PM'], booked: ['4:30 PM'] },
+        'Sun Mar 15': { slots: ['2:00 PM','2:30 PM','3:00 PM','3:30 PM'], booked: [] },
+      }
+    },
+    priya: {
+      color: 'rose',
+      schedule: {
+        'Mon Mar 9':  { slots: ['3:00 PM','3:30 PM','4:00 PM','4:30 PM'], booked: ['3:30 PM'] },
+        'Fri Mar 13': { slots: ['3:00 PM','3:30 PM','4:00 PM','4:30 PM'], booked: ['4:00 PM'] },
+        'Sat Mar 14': { slots: ['1:00 PM','1:30 PM','2:00 PM','2:30 PM'], booked: ['2:00 PM'] },
+      }
+    },
+    alex: {
+      color: 'peach',
+      schedule: {
+        'Wed Mar 11': { slots: ['5:00 PM','5:30 PM','6:00 PM','6:30 PM'], booked: ['6:00 PM'] },
+        'Thu Mar 12': { slots: ['5:00 PM','5:30 PM','6:00 PM','6:30 PM'], booked: ['5:30 PM'] },
+        'Sat Mar 14': { slots: ['11:00 AM','11:30 AM','12:00 PM','12:30 PM'], booked: ['11:30 AM'] },
+      }
+    }
+  };
+
+  const selectedSlots = { maya: null, jordan: null, priya: null, alex: null };
+  const selectedDurations = { maya: 30, jordan: 30, priya: 30, alex: 30 };
+
+  // ── Open Booking Modal ───────────────────────────────────────────
+  function openBookingModal(tutorId) {
+    openModal(`modal-book-${tutorId}`);
+  }
+
+  // ── Day Pill Click ───────────────────────────────────────────────
+  document.addEventListener('DOMContentLoaded', () => {
+
+    document.querySelectorAll('.day-pill').forEach(pill => {
+      pill.addEventListener('click', () => {
+        const tutor = pill.dataset.tutor;
+        const day   = pill.dataset.day;
+        // Deselect others in same group
+        pill.closest('.day-pills').querySelectorAll('.day-pill').forEach(p => p.classList.remove('active'));
+        pill.classList.add('active');
+        selectedSlots[tutor] = null;
+        renderSlots(tutor, day);
+      });
+    });
+
+    // ── Duration Btn Click ─────────────────────────────────────────
+    document.querySelectorAll('.duration-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const tutor = btn.dataset.tutor;
+        const dur   = btn.dataset.dur;
+        btn.closest('.duration-toggle').querySelectorAll('.duration-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        selectedDurations[tutor] = parseInt(dur);
+      });
+    });
+
+    // ── Register Form Submit ───────────────────────────────────────
+    document.querySelectorAll('.register-form').forEach(form => {
+      form.addEventListener('submit', e => {
+        e.preventDefault();
+        const success = form.querySelector('.form-success');
+        if (success) {
+          success.style.display = 'block';
+          form.querySelectorAll('input,select,textarea,button[type="submit"]').forEach(el => el.disabled = true);
+        }
+      });
+    });
+
+  });
+
+  // ── Render Time Slots ────────────────────────────────────────────
+  function renderSlots(tutor, day) {
+    const container = document.getElementById(`${tutor}-slots`);
+    const data = tutorAvailability[tutor].schedule[day];
+    const color = tutorAvailability[tutor].color;
+    if (!data) { container.innerHTML = '<div class="no-day-selected">No availability data for this day.</div>'; return; }
+
+    container.innerHTML = data.slots.map(slot => {
+      const isBooked = data.booked.includes(slot);
+      return `<button
+        class="time-slot${isBooked ? ' booked' : ''}"
+        data-tutor="${tutor}"
+        data-slot="${slot}"
+        ${isBooked ? 'disabled aria-disabled="true"' : ''}
+        aria-label="${slot}${isBooked ? ' — already booked' : ''}"
+      >${slot}${isBooked ? '<br><small>Booked</small>' : ''}</button>`;
+    }).join('');
+
+    container.querySelectorAll('.time-slot:not(.booked)').forEach(btn => {
+      btn.addEventListener('click', () => {
+        container.querySelectorAll('.time-slot').forEach(b => b.classList.remove('selected', color));
+        btn.classList.add('selected', color);
+        selectedSlots[tutor] = btn.dataset.slot;
+      });
+    });
+  }
+</script>
+
+
+<!-- FOOTER -->
+<svg class="footer-wave" viewBox="0 0 1440 60" preserveAspectRatio="none" aria-hidden="true">
+  <path d="M0,30 C360,60 1080,0 1440,30 L1440,60 L0,60 Z" fill="var(--sage-light)"/>
+</svg>
+<footer class="footer" role="contentinfo">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <a href="index.html" class="footer-logo">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="12" cy="12" r="9" stroke="var(--sage)" stroke-width="1.5"/>
+          <path d="M12 3C12 3 8 7 8 12C8 17 12 21 12 21" stroke="var(--sage)" stroke-width="1.5"/>
+          <path d="M12 3C12 3 16 7 16 12C16 17 12 21 12 21" stroke="var(--sage)" stroke-width="1.5"/>
+          <line x1="3" y1="12" x2="21" y2="12" stroke="var(--sage)" stroke-width="1.5"/>
+        </svg>Build-a-Web
+      </a>
+      <p>A student-made learning hub teaching HTML, CSS, and JavaScript to high school students everywhere.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Pages</h4>
+      <ul role="list">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="schedule.html">Schedule</a></li>
+        <li><a href="tutors.html">Tutors</a></li>
+        <li><a href="dashboard.html">Dashboard</a></li>
+        <li><a href="resources.html">Resources</a></li>
+        <li><a href="about.html">About</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <div class="footer-contact-item"><i class="fa-solid fa-envelope" aria-hidden="true"></i> hello@buildaweb.edu</div>
+      <div class="footer-contact-item"><i class="fa-solid fa-location-dot" aria-hidden="true"></i> FBLA 2025–2026</div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p class="footer-tagline">Built with care by students, for students.</p>
+    <p class="footer-copy">&copy; 2026 Build-a-Web. FBLA Website Design.</p>
+  </div>
+</footer>
+
+<button class="back-to-top" aria-label="Back to top"><i class="fa-solid fa-arrow-up" aria-hidden="true"></i> Top</button>
+<script src="script.js"></script>
+</body>
+</html>
