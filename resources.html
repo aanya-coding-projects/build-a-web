@@ -178,6 +178,28 @@
       background: rgba(0,0,0,0.05);
       color: var(--gray-mid);
     }
+
+    /* ── Clickable unit cards ────────────────────────── */
+    a.unit-summary-card {
+      display: block;
+      text-decoration: none;
+      color: inherit;
+    }
+    .unit-card-cta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(0,0,0,0.06);
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--gray-mid);
+      transition: color var(--transition);
+    }
+    a.unit-summary-card:hover .unit-card-cta { color: var(--charcoal); }
+    a.unit-summary-card:hover .unit-card-cta i { transform: translateX(3px); }
+    .unit-card-cta i { transition: transform var(--transition); }
   </style>
 </head>
 <body>
@@ -286,7 +308,7 @@
 
       <div class="units-overview-grid">
 
-        <div class="unit-summary-card u1-border reveal">
+        <a href="curriculum.html#unit-1" class="unit-summary-card u1-border reveal">
           <div class="unit-card-top">
             <span class="unit-num-badge u1" aria-hidden="true" style="width:24px;height:24px;font-size:0.7rem;border-radius:6px">1</span>
             <span class="unit-card-num">Beginner</span>
@@ -300,9 +322,10 @@
             <span class="unit-res-pip"><i class="fa-solid fa-circle-question" aria-hidden="true"></i> 1 Quiz</span>
             <span class="unit-res-pip"><i class="fa-solid fa-download" aria-hidden="true"></i> 2 Downloads</span>
           </div>
-        </div>
+          <div class="unit-card-cta">View unit <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></div>
+        </a>
 
-        <div class="unit-summary-card u2-border reveal reveal-delay-1">
+        <a href="curriculum.html#unit-2" class="unit-summary-card u2-border reveal reveal-delay-1">
           <div class="unit-card-top">
             <span class="unit-num-badge u2" aria-hidden="true" style="width:24px;height:24px;font-size:0.7rem;border-radius:6px">2</span>
             <span class="unit-card-num">Beginner</span>
@@ -316,9 +339,10 @@
             <span class="unit-res-pip"><i class="fa-solid fa-circle-question" aria-hidden="true"></i> 1 Quiz</span>
             <span class="unit-res-pip"><i class="fa-solid fa-download" aria-hidden="true"></i> 2 Downloads</span>
           </div>
-        </div>
+          <div class="unit-card-cta">View unit <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></div>
+        </a>
 
-        <div class="unit-summary-card u3-border reveal reveal-delay-2">
+        <a href="curriculum.html#unit-3" class="unit-summary-card u3-border reveal reveal-delay-2">
           <div class="unit-card-top">
             <span class="unit-num-badge u3" aria-hidden="true" style="width:24px;height:24px;font-size:0.7rem;border-radius:6px">3</span>
             <span class="unit-card-num">Intermediate</span>
@@ -330,9 +354,10 @@
             <span class="unit-res-pip"><i class="fa-solid fa-book-open" aria-hidden="true"></i> 1 Lesson</span>
             <span class="unit-res-pip"><i class="fa-brands fa-youtube" aria-hidden="true"></i> 2 Videos</span>
           </div>
-        </div>
+          <div class="unit-card-cta">View unit <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></div>
+        </a>
 
-        <div class="unit-summary-card u4-border reveal">
+        <a href="curriculum.html#unit-4" class="unit-summary-card u4-border reveal">
           <div class="unit-card-top">
             <span class="unit-num-badge u4" aria-hidden="true" style="width:24px;height:24px;font-size:0.7rem;border-radius:6px">4</span>
             <span class="unit-card-num">Beginner</span>
@@ -346,9 +371,10 @@
             <span class="unit-res-pip"><i class="fa-solid fa-circle-question" aria-hidden="true"></i> 1 Quiz</span>
             <span class="unit-res-pip"><i class="fa-solid fa-download" aria-hidden="true"></i> 1 Download</span>
           </div>
-        </div>
+          <div class="unit-card-cta">View unit <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></div>
+        </a>
 
-        <div class="unit-summary-card u5-border reveal reveal-delay-1">
+        <a href="curriculum.html#unit-5" class="unit-summary-card u5-border reveal reveal-delay-1">
           <div class="unit-card-top">
             <span class="unit-num-badge u5" aria-hidden="true" style="width:24px;height:24px;font-size:0.7rem;border-radius:6px">5</span>
             <span class="unit-card-num">Intermediate</span>
@@ -360,9 +386,10 @@
             <span class="unit-res-pip"><i class="fa-solid fa-book-open" aria-hidden="true"></i> 1 Lesson</span>
             <span class="unit-res-pip"><i class="fa-brands fa-youtube" aria-hidden="true"></i> 1 Video</span>
           </div>
-        </div>
+          <div class="unit-card-cta">View unit <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></div>
+        </a>
 
-        <div class="unit-summary-card u6-border reveal reveal-delay-2">
+        <a href="curriculum.html#unit-6" class="unit-summary-card u6-border reveal reveal-delay-2">
           <div class="unit-card-top">
             <span class="unit-num-badge u6" aria-hidden="true" style="width:24px;height:24px;font-size:0.7rem;border-radius:6px">6</span>
             <span class="unit-card-num">Intermediate</span>
@@ -374,7 +401,8 @@
             <span class="unit-res-pip"><i class="fa-solid fa-book-open" aria-hidden="true"></i> 1 Lesson</span>
             <span class="unit-res-pip"><i class="fa-solid fa-download" aria-hidden="true"></i> 1 Download</span>
           </div>
-        </div>
+          <div class="unit-card-cta">View unit <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></div>
+        </a>
 
       </div>
 

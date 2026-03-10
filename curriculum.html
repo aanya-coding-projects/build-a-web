@@ -1,0 +1,1334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Build-a-Web full curriculum — all 6 units with lessons, videos, quizzes, and downloads in one place." />
+  <title>Curriculum | Build-a-Web</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    /* ── Layout ─────────────────────────────────────── */
+    .curriculum-layout {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 40px;
+      align-items: start;
+    }
+    @media(max-width:1024px){ .curriculum-layout { grid-template-columns: 1fr; } }
+
+    /* ── Sticky Sidebar ─────────────────────────────── */
+    .unit-sidebar {
+      position: sticky;
+      top: 88px;
+    }
+    @media(max-width:1024px){
+      .unit-sidebar {
+        position: static;
+        display: flex;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        gap: 8px;
+        padding-bottom: 4px;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+      }
+      .unit-sidebar::-webkit-scrollbar { display: none; }
+    }
+
+    .sidebar-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--gray-mid);
+      margin-bottom: 14px;
+      padding: 0 4px;
+    }
+    @media(max-width:1024px){ .sidebar-label { display: none; } }
+
+    .sidebar-unit-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 12px;
+      border-radius: 10px;
+      text-decoration: none;
+      color: var(--gray-mid);
+      font-size: 0.85rem;
+      font-weight: 500;
+      transition: all var(--transition);
+      margin-bottom: 4px;
+      white-space: nowrap;
+    }
+    @media(max-width:1024px){
+      .sidebar-unit-link {
+        flex-shrink: 0;
+        margin-bottom: 0;
+        border: 1.5px solid rgba(0,0,0,0.1);
+        background: var(--white);
+        box-shadow: var(--card-shadow);
+      }
+    }
+    .sidebar-unit-link:hover { background: rgba(0,0,0,0.04); color: var(--charcoal); }
+    .sidebar-unit-link.active { background: rgba(138,171,138,0.1); color: var(--charcoal); font-weight: 600; }
+
+    .sidebar-num {
+      width: 26px;
+      height: 26px;
+      border-radius: 7px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 800;
+      color: white;
+      flex-shrink: 0;
+    }
+    .s1 { background: var(--sage); }
+    .s2 { background: var(--lavender); }
+    .s3 { background: #c8885c; }
+    .s4 { background: var(--dusty-rose); }
+    .s5 { background: #6a8b6a; }
+    .s6 { background: #7b6ea4; }
+
+    /* ── Unit Sections ──────────────────────────────── */
+    .unit-section {
+      scroll-margin-top: 100px;
+      margin-bottom: 72px;
+    }
+
+    .unit-section-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 20px;
+      padding-bottom: 20px;
+      border-bottom: 2px solid rgba(0,0,0,0.06);
+      flex-wrap: wrap;
+    }
+
+    .unit-big-num {
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-serif);
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: white;
+      flex-shrink: 0;
+    }
+
+    .unit-section-meta { flex: 1; }
+    .unit-section-title {
+      font-family: var(--font-serif);
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--charcoal);
+      margin-bottom: 4px;
+    }
+    .unit-section-sub {
+      font-size: 0.88rem;
+      color: var(--gray-mid);
+      line-height: 1.55;
+      margin-top: 6px;
+      max-width: 540px;
+    }
+    .unit-badges-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+
+    /* ── Resource sub-section headers ───────────────── */
+    .resource-sub-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 28px 0 14px;
+    }
+    .resource-sub-header .icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+      flex-shrink: 0;
+    }
+    .resource-sub-header h4 {
+      font-family: var(--font-serif);
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--charcoal);
+    }
+    .resource-sub-header .count {
+      font-size: 0.75rem;
+      color: var(--gray-mid);
+      margin-left: auto;
+    }
+
+    /* ── Video grid ─────────────────────────────────── */
+    .unit-video-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 16px;
+    }
+
+    /* ── Download grid ──────────────────────────────── */
+    .unit-dl-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 16px;
+    }
+
+    /* ── Quiz card ──────────────────────────────────── */
+    .quiz-card-shell {
+      background: var(--white);
+      border-radius: var(--radius-card);
+      box-shadow: var(--card-shadow);
+      overflow: hidden;
+    }
+    .quiz-card-header {
+      padding: 18px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+    }
+    .quiz-card-header h3 {
+      font-family: var(--font-serif);
+      font-size: 1.05rem;
+      font-weight: 600;
+    }
+    .quiz-card-body { padding: 24px; }
+
+    /* ── No-resource note ───────────────────────────── */
+    .no-resource-note {
+      font-size: 0.83rem;
+      color: var(--gray-light);
+      font-style: italic;
+      padding: 8px 0;
+    }
+
+    /* ── Prev / Next unit nav ───────────────────────── */
+    .unit-nav-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 36px;
+      padding-top: 24px;
+      border-top: 1px solid rgba(0,0,0,0.06);
+      flex-wrap: wrap;
+    }
+    .unit-nav-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 18px;
+      border-radius: var(--radius-pill);
+      border: 1.5px solid rgba(0,0,0,0.1);
+      background: var(--white);
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--charcoal);
+      cursor: pointer;
+      text-decoration: none;
+      box-shadow: var(--card-shadow);
+      transition: all var(--transition);
+    }
+    .unit-nav-btn:hover { transform: translateY(-2px); box-shadow: var(--card-shadow-hover); }
+    .unit-nav-btn.invisible { opacity: 0; pointer-events: none; }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav" role="navigation" aria-label="Main navigation">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5"/>
+        <path d="M12 3C12 3 8 7 8 12C8 17 12 21 12 21" stroke="currentColor" stroke-width="1.5"/>
+        <path d="M12 3C12 3 16 7 16 12C16 17 12 21 12 21" stroke="currentColor" stroke-width="1.5"/>
+        <line x1="3" y1="12" x2="21" y2="12" stroke="currentColor" stroke-width="1.5"/>
+        <line x1="4.5" y1="7.5" x2="19.5" y2="7.5" stroke="currentColor" stroke-width="1.5"/>
+        <line x1="4.5" y1="16.5" x2="19.5" y2="16.5" stroke="currentColor" stroke-width="1.5"/>
+      </svg>
+      Build-a-Web
+    </a>
+    <ul class="nav-links" role="list">
+      <li><a href="index.html" class="nav-link">Home</a></li>
+      <li><a href="schedule.html" class="nav-link">Schedule</a></li>
+      <li><a href="tutors.html" class="nav-link">Tutors</a></li>
+      <li><a href="dashboard.html" class="nav-link">Dashboard</a></li>
+      <li><a href="resources.html" class="nav-link">Resources</a></li>
+      <li><a href="about.html" class="nav-link">About</a></li>
+      <li><a href="resources.html" class="nav-link nav-cta">Start Learning</a></li>
+    </ul>
+    <button class="nav-hamburger" aria-label="Open menu"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+<div class="nav-overlay"></div>
+<nav class="nav-drawer">
+  <a href="index.html" class="drawer-link">Home</a>
+  <a href="schedule.html" class="drawer-link">Schedule</a>
+  <a href="tutors.html" class="drawer-link">Tutors</a>
+  <a href="dashboard.html" class="drawer-link">Dashboard</a>
+  <a href="resources.html" class="drawer-link">Resources</a>
+  <a href="about.html" class="drawer-link">About</a>
+</nav>
+
+
+<!-- HERO -->
+<section class="hero hero-pattern-lines" style="min-height:44vh" aria-label="Curriculum hero">
+  <div class="hero-bg">
+    <div class="hero-bg-pattern"></div>
+    <div class="blob blob-1" style="background:#e8f0e9"></div>
+    <div class="blob blob-2" style="background:#ede8f5"></div>
+    <div class="blob blob-3" style="background:#fceef5"></div>
+  </div>
+  <canvas class="particle-canvas" id="curriculum-particles" aria-hidden="true"></canvas>
+  <div class="container hero-content" style="width:100%">
+    <div style="padding:110px 0 52px; max-width:640px">
+      <div class="hero-text">
+        <span class="hero-label">Full Curriculum</span>
+        <h1 class="hero-title">All 6 Units</h1>
+        <p class="hero-subtitle">Every lesson, video, quiz, and download — organized by unit in one place. Follow the path from Unit 1 to 6, or jump to wherever you are.</p>
+        <div class="hero-actions">
+          <a href="#unit-1" class="btn btn-primary">
+            <i class="fa-solid fa-play" aria-hidden="true"></i>
+            Start at Unit 1
+          </a>
+          <a href="resources.html" class="btn btn-secondary">
+            <i class="fa-solid fa-layer-group" aria-hidden="true"></i>
+            Browse by Type
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<svg class="wave-divider" viewBox="0 0 1440 60" preserveAspectRatio="none" aria-hidden="true">
+  <path d="M0,20 C360,60 1080,0 1440,40 L1440,60 L0,60 Z" fill="#fdf6ec"/>
+</svg>
+
+
+<!-- MAIN CONTENT -->
+<section class="section bg-cream" style="padding-top:40px">
+  <div class="container">
+    <div class="curriculum-layout">
+
+      <!-- ── Sticky Sidebar ──────────────────────────── -->
+      <aside class="unit-sidebar" aria-label="Unit navigation">
+        <p class="sidebar-label">Jump to unit</p>
+        <a href="#unit-1" class="sidebar-unit-link active" data-unit="1">
+          <span class="sidebar-num s1" aria-hidden="true">1</span>
+          HTML Foundations
+        </a>
+        <a href="#unit-2" class="sidebar-unit-link" data-unit="2">
+          <span class="sidebar-num s2" aria-hidden="true">2</span>
+          CSS Fundamentals
+        </a>
+        <a href="#unit-3" class="sidebar-unit-link" data-unit="3">
+          <span class="sidebar-num s3" aria-hidden="true">3</span>
+          CSS Layouts
+        </a>
+        <a href="#unit-4" class="sidebar-unit-link" data-unit="4">
+          <span class="sidebar-num s4" aria-hidden="true">4</span>
+          JavaScript Basics
+        </a>
+        <a href="#unit-5" class="sidebar-unit-link" data-unit="5">
+          <span class="sidebar-num s5" aria-hidden="true">5</span>
+          JS &amp; the DOM
+        </a>
+        <a href="#unit-6" class="sidebar-unit-link" data-unit="6">
+          <span class="sidebar-num s6" aria-hidden="true">6</span>
+          Responsive Design
+        </a>
+      </aside>
+
+
+      <!-- ── Unit Sections ────────────────────────────── -->
+      <div>
+
+        <!-- ══════════════════════════════════════════════
+             UNIT 1 — HTML Foundations
+             ══════════════════════════════════════════════ -->
+        <section class="unit-section" id="unit-1" aria-labelledby="unit-1-title">
+          <div class="unit-section-header">
+            <div class="unit-big-num s1" aria-hidden="true">1</div>
+            <div class="unit-section-meta">
+              <h2 class="unit-section-title" id="unit-1-title">HTML Foundations</h2>
+              <div class="unit-badges-row">
+                <span class="badge badge-beginner">Beginner</span>
+                <span style="font-size:0.8rem;color:var(--gray-mid)">1 lesson &nbsp;·&nbsp; 1 video &nbsp;·&nbsp; 1 quiz &nbsp;·&nbsp; 2 downloads</span>
+              </div>
+              <p class="unit-section-sub">Learn the skeleton of every webpage — how browsers read HTML, how elements are structured, and how to write semantic markup that's accessible and maintainable.</p>
+            </div>
+          </div>
+
+          <!-- Lesson -->
+          <div class="resource-sub-header">
+            <div class="icon" style="background:rgba(138,171,138,0.12);color:var(--sage)"><i class="fa-solid fa-book-open" aria-hidden="true"></i></div>
+            <h4>Lesson</h4>
+            <span class="count">12 min read</span>
+          </div>
+          <div class="accordion-list" role="list">
+            <div class="accordion-item reveal" role="listitem">
+              <div class="accordion-header" role="button" aria-expanded="false" tabindex="0">
+                <div class="accordion-header-left">
+                  <div class="accordion-icon" style="background:rgba(138,171,138,0.12);color:var(--sage)">
+                    <i class="fa-solid fa-code" aria-hidden="true"></i>
+                  </div>
+                  <div>
+                    <div style="font-weight:600;font-size:0.95rem;color:var(--charcoal)">HTML Structure</div>
+                    <div class="accordion-meta">
+                      <span class="badge badge-beginner">Beginner</span>
+                      <span style="font-size:0.78rem;color:var(--gray-mid)"><i class="fa-regular fa-clock" aria-hidden="true"></i> 12 min read</span>
+                    </div>
+                  </div>
+                </div>
+                <i class="fa-solid fa-chevron-down accordion-chevron" aria-hidden="true"></i>
+              </div>
+              <div class="accordion-body">
+                <div class="accordion-content">
+                  <div class="lesson-content">
+                    <h3>What is HTML?</h3>
+                    <p>HTML — HyperText Markup Language — is the standard language for creating web pages. It describes the <em>structure</em> of a page using a series of elements, which tell the browser how to display content. Think of HTML as the skeleton of a website: it determines what goes where, but doesn't directly control how things look (that's CSS's job).</p>
+                    <h3>The Document Structure</h3>
+                    <div class="code-block">
+                      <div class="code-block-header"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div><span style="margin-left:8px;font-size:0.78rem;color:rgba(255,255,255,0.8);font-family:var(--font-mono)">index.html</span></div>
+                      <pre><span class="tag">&lt;!DOCTYPE</span> <span class="attr">html</span><span class="tag">&gt;</span>
+<span class="tag">&lt;html</span> <span class="attr">lang</span>=<span class="str">"en"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;head&gt;</span>
+    <span class="tag">&lt;meta</span> <span class="attr">charset</span>=<span class="str">"UTF-8"</span> <span class="tag">/&gt;</span>
+    <span class="tag">&lt;title&gt;</span>Page Title<span class="tag">&lt;/title&gt;</span>
+  <span class="tag">&lt;/head&gt;</span>
+  <span class="tag">&lt;body&gt;</span>
+    <span class="tag">&lt;h1&gt;</span>Hello, World!<span class="tag">&lt;/h1&gt;</span>
+  <span class="tag">&lt;/body&gt;</span>
+<span class="tag">&lt;/html&gt;</span></pre>
+                    </div>
+                    <h3>Semantic HTML</h3>
+                    <p>Semantic elements clearly describe their meaning. Use <code style="font-family:var(--font-mono);font-size:0.85em">&lt;header&gt;</code>, <code style="font-family:var(--font-mono);font-size:0.85em">&lt;main&gt;</code>, <code style="font-family:var(--font-mono);font-size:0.85em">&lt;section&gt;</code>, <code style="font-family:var(--font-mono);font-size:0.85em">&lt;article&gt;</code>, <code style="font-family:var(--font-mono);font-size:0.85em">&lt;nav&gt;</code>, and <code style="font-family:var(--font-mono);font-size:0.85em">&lt;footer&gt;</code> instead of generic <code style="font-family:var(--font-mono);font-size:0.85em">&lt;div&gt;</code> elements. Semantic markup improves accessibility, SEO, and code readability.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Video -->
+          <div class="resource-sub-header">
+            <div class="icon" style="background:rgba(201,128,138,0.1);color:var(--dusty-rose)"><i class="fa-brands fa-youtube" aria-hidden="true"></i></div>
+            <h4>Video</h4>
+            <span class="count">1 video · 2h 14m</span>
+          </div>
+          <div class="unit-video-grid">
+            <div class="card video-card reveal" data-youtube="UB1O30fR-EE">
+              <div class="video-thumbnail" style="background:linear-gradient(135deg,#e8f0e9,#d4e4d4)">
+                <div class="video-play-btn" aria-hidden="true"><i class="fa-solid fa-play" style="margin-left:3px"></i></div>
+              </div>
+              <div class="card-body">
+                <h4>HTML Full Course for Beginners</h4>
+                <div class="video-meta">
+                  <span><i class="fa-brands fa-youtube" aria-hidden="true" style="color:#c9808a"></i> freeCodeCamp</span>
+                  <span>2h 14m</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quiz -->
+          <div class="resource-sub-header">
+            <div class="icon" style="background:rgba(232,168,124,0.12);color:#c8885c"><i class="fa-solid fa-circle-question" aria-hidden="true"></i></div>
+            <h4>Quiz</h4>
+            <span class="count">5 questions · ~4 min</span>
+          </div>
+          <div class="quiz-card-shell reveal">
+            <div class="quiz-card-header">
+              <div style="display:flex;align-items:center;gap:12px">
+                <div style="width:36px;height:36px;border-radius:9px;background:rgba(138,171,138,0.12);display:flex;align-items:center;justify-content:center;color:var(--sage)"><i class="fa-solid fa-code" aria-hidden="true"></i></div>
+                <div>
+                  <h3>HTML Basics Quiz</h3>
+                  <span style="font-size:0.78rem;color:var(--gray-mid)">5 questions &nbsp;·&nbsp; ~4 min</span>
+                </div>
+              </div>
+              <span class="badge badge-beginner">Beginner</span>
+            </div>
+            <div class="quiz-card-body">
+              <div id="quiz-html" data-quiz>
+                <div class="quiz-progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"><div class="quiz-progress-fill" style="width:0%"></div></div>
+                <div class="quiz-question active">
+                  <h3>1. What does HTML stand for?</h3>
+                  <div class="quiz-options">
+                    <button class="quiz-option" data-correct="false">High-Level Text Markup Language</button>
+                    <button class="quiz-option" data-correct="true">HyperText Markup Language</button>
+                    <button class="quiz-option" data-correct="false">Hyper Transfer Markup Language</button>
+                    <button class="quiz-option" data-correct="false">HyperText Machine Language</button>
+                  </div>
+                  <div class="quiz-nav"><button class="btn btn-primary btn-sm quiz-next-btn">Next <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button></div>
+                </div>
+                <div class="quiz-question">
+                  <h3>2. Which element is used for the largest heading?</h3>
+                  <div class="quiz-options">
+                    <button class="quiz-option" data-correct="false">&lt;heading&gt;</button>
+                    <button class="quiz-option" data-correct="false">&lt;h6&gt;</button>
+                    <button class="quiz-option" data-correct="true">&lt;h1&gt;</button>
+                    <button class="quiz-option" data-correct="false">&lt;head&gt;</button>
+                  </div>
+                  <div class="quiz-nav"><button class="btn btn-primary btn-sm quiz-next-btn">Next <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button></div>
+                </div>
+                <div class="quiz-question">
+                  <h3>3. Which element defines the body content of a web page?</h3>
+                  <div class="quiz-options">
+                    <button class="quiz-option" data-correct="false">&lt;html&gt;</button>
+                    <button class="quiz-option" data-correct="false">&lt;head&gt;</button>
+                    <button class="quiz-option" data-correct="true">&lt;body&gt;</button>
+                    <button class="quiz-option" data-correct="false">&lt;content&gt;</button>
+                  </div>
+                  <div class="quiz-nav"><button class="btn btn-primary btn-sm quiz-next-btn">Next <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button></div>
+                </div>
+                <div class="quiz-question">
+                  <h3>4. What is the correct HTML for creating a hyperlink?</h3>
+                  <div class="quiz-options">
+                    <button class="quiz-option" data-correct="false">&lt;link href="url"&gt;text&lt;/link&gt;</button>
+                    <button class="quiz-option" data-correct="false">&lt;url&gt;text&lt;/url&gt;</button>
+                    <button class="quiz-option" data-correct="true">&lt;a href="url"&gt;text&lt;/a&gt;</button>
+                    <button class="quiz-option" data-correct="false">&lt;href="url"&gt;text&lt;/href&gt;</button>
+                  </div>
+                  <div class="quiz-nav"><button class="btn btn-primary btn-sm quiz-next-btn">Next <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button></div>
+                </div>
+                <div class="quiz-question">
+                  <h3>5. Which HTML attribute specifies alternate text for an image?</h3>
+                  <div class="quiz-options">
+                    <button class="quiz-option" data-correct="false">title</button>
+                    <button class="quiz-option" data-correct="true">alt</button>
+                    <button class="quiz-option" data-correct="false">src</button>
+                    <button class="quiz-option" data-correct="false">longdesc</button>
+                  </div>
+                  <div class="quiz-nav"><button class="btn btn-primary btn-sm quiz-next-btn">Finish <i class="fa-solid fa-flag-checkered" aria-hidden="true"></i></button></div>
+                </div>
+                <div class="quiz-score-card">
+                  <div class="quiz-score-number"></div>
+                  <h3>Quiz Complete!</h3>
+                  <p>Great work. Review the lesson above to reinforce any questions you missed.</p>
+                  <button class="btn btn-secondary quiz-restart-btn">Try Again</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Downloads -->
+          <div class="resource-sub-header">
+            <div class="icon" style="background:rgba(155,142,196,0.1);color:var(--lavender)"><i class="fa-solid fa-download" aria-hidden="true"></i></div>
+            <h4>Downloads</h4>
+            <span class="count">2 files</span>
+          </div>
+          <div class="unit-dl-grid">
+            <div class="card download-card reveal">
+              <div class="download-card-top"><div><span class="file-type-badge file-html">HTML</span></div></div>
+              <h4>HTML Cheat Sheet</h4>
+              <p>All essential HTML elements, attributes, semantic tags, and form inputs with examples — one page.</p>
+              <div class="download-card-footer">
+                <span class="file-size">~4 KB</span>
+                <button class="btn btn-primary btn-sm" onclick="downloadHTMLCheatSheet()"><i class="fa-solid fa-download" aria-hidden="true"></i> Download</button>
+              </div>
+            </div>
+            <div class="card download-card reveal reveal-delay-1">
+              <div class="download-card-top"><div><span class="file-type-badge file-html">HTML</span></div></div>
+              <h4>HTML Starter Template</h4>
+              <p>A clean HTML5 boilerplate with semantic structure, viewport meta, and CSS reset — ready to use.</p>
+              <div class="download-card-footer">
+                <span class="file-size">~2 KB</span>
+                <button class="btn btn-primary btn-sm" onclick="downloadStarterTemplate()"><i class="fa-solid fa-download" aria-hidden="true"></i> Download</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="unit-nav-row">
+            <span class="unit-nav-btn invisible" aria-hidden="true"></span>
+            <a href="#unit-2" class="unit-nav-btn">Next: CSS Fundamentals <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+          </div>
+        </section>
+
+
+        <!-- ══════════════════════════════════════════════
+             UNIT 2 — CSS Fundamentals
+             ══════════════════════════════════════════════ -->
+        <section class="unit-section" id="unit-2" aria-labelledby="unit-2-title">
+          <div class="unit-section-header">
+            <div class="unit-big-num s2" aria-hidden="true">2</div>
+            <div class="unit-section-meta">
+              <h2 class="unit-section-title" id="unit-2-title">CSS Fundamentals</h2>
+              <div class="unit-badges-row">
+                <span class="badge badge-beginner">Beginner</span>
+                <span style="font-size:0.8rem;color:var(--gray-mid)">1 lesson &nbsp;·&nbsp; 1 video &nbsp;·&nbsp; 1 quiz &nbsp;·&nbsp; 2 downloads</span>
+              </div>
+              <p class="unit-section-sub">Understand the box model, selectors, and core CSS properties that control how everything looks on screen. This unit is the foundation for everything visual you'll build.</p>
+            </div>
+          </div>
+
+          <!-- Lesson -->
+          <div class="resource-sub-header">
+            <div class="icon" style="background:rgba(155,142,196,0.12);color:var(--lavender)"><i class="fa-solid fa-book-open" aria-hidden="true"></i></div>
+            <h4>Lesson</h4>
+            <span class="count">10 min read</span>
+          </div>
+          <div class="accordion-list" role="list">
+            <div class="accordion-item reveal" role="listitem">
+              <div class="accordion-header" role="button" aria-expanded="false" tabindex="0">
+                <div class="accordion-header-left">
+                  <div class="accordion-icon" style="background:rgba(155,142,196,0.12);color:var(--lavender)">
+                    <i class="fa-solid fa-square" aria-hidden="true"></i>
+                  </div>
+                  <div>
+                    <div style="font-weight:600;font-size:0.95rem;color:var(--charcoal)">CSS Box Model</div>
+                    <div class="accordion-meta">
+                      <span class="badge badge-beginner">Beginner</span>
+                      <span style="font-size:0.78rem;color:var(--gray-mid)"><i class="fa-regular fa-clock" aria-hidden="true"></i> 10 min read</span>
+                    </div>
+                  </div>
+                </div>
+                <i class="fa-solid fa-chevron-down accordion-chevron" aria-hidden="true"></i>
+              </div>
+              <div class="accordion-body">
+                <div class="accordion-content">
+                  <div class="lesson-content">
+                    <h3>The Box Model Explained</h3>
+                    <p>Every HTML element is treated as a rectangular box with four layers: <strong>content</strong>, <strong>padding</strong>, <strong>border</strong>, and <strong>margin</strong>.</p>
+                    <div class="code-block">
+                      <div class="code-block-header"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div><span style="margin-left:8px;font-size:0.78rem;color:rgba(255,255,255,0.8);font-family:var(--font-mono)">style.css</span></div>
+                      <pre><span class="tag">.box</span> {
+  <span class="attr">width</span>: <span class="str">300px</span>;
+  <span class="attr">padding</span>: <span class="str">20px</span>;     <span class="cm">/* space inside border */</span>
+  <span class="attr">border</span>: <span class="str">2px solid #ccc</span>;
+  <span class="attr">margin</span>: <span class="str">16px</span>;      <span class="cm">/* space outside border */</span>
+  <span class="attr">box-sizing</span>: <span class="str">border-box</span>;
+}</pre>
+                    </div>
+                    <h3>box-sizing: border-box</h3>
+                    <p>Setting <code style="font-family:var(--font-mono);font-size:0.85em">box-sizing: border-box</code> makes the browser include padding and border inside the declared width. Apply it globally: <code style="font-family:var(--font-mono);font-size:0.85em">*, *::before, *::after { box-sizing: border-box; }</code>.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Video -->
+          <div class="resource-sub-header">
+            <div class="icon" style="background:rgba(201,128,138,0.1);color:var(--dusty-rose)"><i class="fa-brands fa-youtube" aria-hidden="true"></i></div>
+            <h4>Video</h4>
+            <span class="count">1 video · 6h 18m</span>
+          </div>
+          <div class="unit-video-grid">
+            <div class="card video-card reveal" data-youtube="yfoY53QXEnI">
+              <div class="video-thumbnail" style="background:linear-gradient(135deg,#ede8f5,#ddd4f0)">
+                <div class="video-play-btn" aria-hidden="true"><i class="fa-solid fa-play" style="margin-left:3px"></i></div>
+              </div>
+              <div class="card-body">
+                <h4>CSS Tutorial — Full Course for Beginners</h4>
+                <div class="video-meta">
+                  <span><i class="fa-brands fa-youtube" aria-hidden="true" style="color:#c9808a"></i> freeCodeCamp</span>
+                  <span>6h 18m</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quiz -->
+          <div class="resource-sub-header">
+            <div class="icon" style="background:rgba(232,168,124,0.12);color:#c8885c"><i class="fa-solid fa-circle-question" aria-hidden="true"></i></div>
+            <h4>Quiz</h4>
+            <span class="count">5 questions · ~5 min</span>
+          </div>
+          <div class="quiz-card-shell reveal">
+            <div class="quiz-card-header">
+              <div style="display:flex;align-items:center;gap:12px">
+                <div style="width:36px;height:36px;border-radius:9px;background:rgba(155,142,196,0.12);display:flex;align-items:center;justify-content:center;color:var(--lavender)"><i class="fa-solid fa-palette" aria-hidden="true"></i></div>
+                <div><h3>CSS Styling Quiz</h3><span style="font-size:0.78rem;color:var(--gray-mid)">5 questions &nbsp;·&nbsp; ~5 min</span></div>
+              </div>
+              <span class="badge badge-beginner">Beginner</span>
+            </div>
+            <div class="quiz-card-body">
+              <div id="quiz-css" data-quiz>
+                <div class="quiz-progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"><div class="quiz-progress-fill" style="width:0%"></div></div>
+                <div class="quiz-question active">
+                  <h3>1. How do you select an element with the id "header" in CSS?</h3>
+                  <div class="quiz-options">
+                    <button class="quiz-option" data-correct="false">.header</button>
+                    <button class="quiz-option" data-correct="true">#header</button>
+                    <button class="quiz-option" data-correct="false">header</button>
+                    <button class="quiz-option" data-correct="false">*header</button>
+                  </div>
+                  <div class="quiz-nav"><button class="btn btn-primary btn-sm quiz-next-btn">Next <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button></div>
+                </div>
+                <div class="quiz-question">
+                  <h3>2. Which property changes the background color?</h3>
+                  <div class="quiz-options">
+                    <button class="quiz-option" data-correct="false">color</button>
+                    <button class="quiz-option" data-correct="false">bgcolor</button>
+                    <button class="quiz-option" data-correct="true">background-color</button>
+                    <button class="quiz-option" data-correct="false">fill</button>
+                  </div>
+                  <div class="quiz-nav"><button class="btn btn-primary btn-sm quiz-next-btn">Next <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button></div>
+                </div>
+                <div class="quiz-question">
+                  <h3>3. Which display value creates a flex container?</h3>
+                  <div class="quiz-options">
+                    <button class="quiz-option" data-correct="false">block</button>
+                    <button class="quiz-option" data-correct="false">inline-flex</button>
+                    <button class="quiz-option" data-correct="true">flex</button>
+                    <button class="quiz-option" data-correct="false">grid-flex</button>
+                  </div>
+                  <div class="quiz-nav"><button class="btn btn-primary btn-sm quiz-next-btn">Next <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button></div>
+                </div>
+                <div class="quiz-question">
+                  <h3>4. Which property controls font size?</h3>
+                  <div class="quiz-options">
+                    <button class="quiz-option" data-correct="false">text-size</button>
+                    <button class="quiz-option" data-correct="true">font-size</button>
+                    <button class="quiz-option" data-correct="false">font-style</button>
+                    <button class="quiz-option" data-correct="false">text-style</button>
+                  </div>
+                  <div class="quiz-nav"><button class="btn btn-primary btn-sm quiz-next-btn">Next <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button></div>
+                </div>
+                <div class="quiz-question">
+                  <h3>5. How do you make text bold in CSS?</h3>
+                  <div class="quiz-options">
+                    <button class="quiz-option" data-correct="false">font-style: bold</button>
+                    <button class="quiz-option" data-correct="false">text-decoration: bold</button>
+                    <button class="quiz-option" data-correct="true">font-weight: bold</button>
+                    <button class="quiz-option" data-correct="false">font: bold</button>
+                  </div>
+                  <div class="quiz-nav"><button class="btn btn-primary btn-sm quiz-next-btn">Finish <i class="fa-solid fa-flag-checkered" aria-hidden="true"></i></button></div>
+                </div>
+                <div class="quiz-score-card">
+                  <div class="quiz-score-number"></div>
+                  <h3>Quiz Complete!</h3>
+                  <p>Nice work. Revisit the CSS Box Model lesson to reinforce anything you missed.</p>
+                  <button class="btn btn-secondary quiz-restart-btn">Try Again</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Downloads -->
+          <div class="resource-sub-header">
+            <div class="icon" style="background:rgba(155,142,196,0.1);color:var(--lavender)"><i class="fa-solid fa-download" aria-hidden="true"></i></div>
+            <h4>Downloads</h4>
+            <span class="count">2 files</span>
+          </div>
+          <div class="unit-dl-grid">
+            <div class="card download-card reveal">
+              <div class="download-card-top"><div><span class="file-type-badge file-css">CSS</span></div></div>
+              <h4>CSS Reference Card</h4>
+              <p>Properties, selectors, flexbox/grid shorthand, custom properties, and media query breakpoints.</p>
+              <div class="download-card-footer">
+                <span class="file-size">~5 KB</span>
+                <button class="btn btn-primary btn-sm" onclick="downloadCSSReference()"><i class="fa-solid fa-download" aria-hidden="true"></i> Download</button>
+              </div>
+            </div>
+            <div class="card download-card reveal reveal-delay-1">
+              <div class="download-card-top"><div><span class="file-type-badge file-css">CSS</span></div></div>
+              <h4>Web Color Guide</h4>
+              <p>Pastel and neutral palettes with hex codes, HSL values, and WCAG contrast ratios for safe pairings.</p>
+              <div class="download-card-footer">
+                <span class="file-size">~3 KB</span>
+                <button class="btn btn-primary btn-sm" onclick="downloadColorGuide()"><i class="fa-solid fa-download" aria-hidden="true"></i> Download</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="unit-nav-row">
+            <a href="#unit-1" class="unit-nav-btn"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Unit 1: HTML Foundations</a>
+            <a href="#unit-3" class="unit-nav-btn">Next: CSS Layouts <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+          </div>
+        </section>
+
+
+        <!-- ══════════════════════════════════════════════
+             UNIT 3 — CSS Layouts
+             ══════════════════════════════════════════════ -->
+        <section class="unit-section" id="unit-3" aria-labelledby="unit-3-title">
+          <div class="unit-section-header">
+            <div class="unit-big-num s3" aria-hidden="true">3</div>
+            <div class="unit-section-meta">
+              <h2 class="unit-section-title" id="unit-3-title">CSS Layouts</h2>
+              <div class="unit-badges-row">
+                <span class="badge badge-intermediate">Intermediate</span>
+                <span style="font-size:0.8rem;color:var(--gray-mid)">1 lesson &nbsp;·&nbsp; 2 videos</span>
+              </div>
+              <p class="unit-section-sub">Master Flexbox for one-dimensional layouts and CSS Grid for two-dimensional control. These are the two most important layout tools in modern CSS.</p>
+            </div>
+          </div>
+
+          <!-- Lesson -->
+          <div class="resource-sub-header">
+            <div class="icon" style="background:rgba(232,168,124,0.12);color:#c8885c"><i class="fa-solid fa-book-open" aria-hidden="true"></i></div>
+            <h4>Lesson</h4>
+            <span class="count">15 min read</span>
+          </div>
+          <div class="accordion-list" role="list">
+            <div class="accordion-item reveal" role="listitem">
+              <div class="accordion-header" role="button" aria-expanded="false" tabindex="0">
+                <div class="accordion-header-left">
+                  <div class="accordion-icon" style="background:rgba(232,168,124,0.12);color:var(--peach)">
+                    <i class="fa-solid fa-table-columns" aria-hidden="true"></i>
+                  </div>
+                  <div>
+                    <div style="font-weight:600;font-size:0.95rem;color:var(--charcoal)">CSS Flexbox</div>
+                    <div class="accordion-meta">
+                      <span class="badge badge-intermediate">Intermediate</span>
+                      <span style="font-size:0.78rem;color:var(--gray-mid)"><i class="fa-regular fa-clock" aria-hidden="true"></i> 15 min read</span>
+                    </div>
+                  </div>
+                </div>
+                <i class="fa-solid fa-chevron-down accordion-chevron" aria-hidden="true"></i>
+              </div>
+              <div class="accordion-body">
+                <div class="accordion-content">
+                  <div class="lesson-content">
+                    <h3>What is Flexbox?</h3>
+                    <p>Flexbox is a CSS layout model for one-dimensional layouts — either a row or a column. It makes aligning, distributing, and ordering elements trivial.</p>
+                    <div class="code-block">
+                      <div class="code-block-header"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
+                      <pre><span class="tag">.container</span> {
+  <span class="attr">display</span>: <span class="str">flex</span>;
+  <span class="attr">justify-content</span>: <span class="str">space-between</span>;
+  <span class="attr">align-items</span>: <span class="str">center</span>;
+  <span class="attr">gap</span>: <span class="str">16px</span>;
+  <span class="attr">flex-wrap</span>: <span class="str">wrap</span>;
+}</pre>
+                    </div>
+                    <h3>Key Properties</h3>
+                    <ul>
+                      <li><strong>justify-content</strong> — aligns items along the main axis</li>
+                      <li><strong>align-items</strong> — aligns items along the cross axis</li>
+                      <li><strong>flex-wrap</strong> — allows items to wrap to the next line</li>
+                      <li><strong>flex: 1</strong> — lets children grow to fill available space</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Videos -->
+          <div class="resource-sub-header">
+            <div class="icon" style="background:rgba(201,128,138,0.1);color:var(--dusty-rose)"><i class="fa-brands fa-youtube" aria-hidden="true"></i></div>
+            <h4>Videos</h4>
+            <span class="count">2 videos · 48 min total</span>
+          </div>
+          <div class="unit-video-grid">
+            <div class="card video-card reveal" data-youtube="JJSoEo8JSnc">
+              <div class="video-thumbnail" style="background:linear-gradient(135deg,#fdf0e8,#f0e0d0)">
+                <div class="video-play-btn" aria-hidden="true"><i class="fa-solid fa-play" style="margin-left:3px"></i></div>
+              </div>
+              <div class="card-body">
+                <h4>Flexbox CSS In 20 Minutes</h4>
+                <div class="video-meta">
+                  <span><i class="fa-brands fa-youtube" aria-hidden="true" style="color:#c9808a"></i> Traversy Media</span>
+                  <span>20 min</span>
+                </div>
+              </div>
+            </div>
+            <div class="card video-card reveal reveal-delay-1" data-youtube="jV8B24rSN5o">
+              <div class="video-thumbnail" style="background:linear-gradient(135deg,#e8f0e9,#c8e0c8)">
+                <div class="video-play-btn" aria-hidden="true"><i class="fa-solid fa-play" style="margin-left:3px"></i></div>
+              </div>
+              <div class="card-body">
+                <h4>CSS Grid Layout Crash Course</h4>
+                <div class="video-meta">
+                  <span><i class="fa-brands fa-youtube" aria-hidden="true" style="color:#c9808a"></i> Traversy Media</span>
+                  <span>28 min</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <p class="no-resource-note" style="margin-top:12px"><i class="fa-solid fa-info-circle" aria-hidden="true"></i> No quiz or downloads for this unit — head to Unit 4 after finishing the videos.</p>
+
+          <div class="unit-nav-row">
+            <a href="#unit-2" class="unit-nav-btn"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Unit 2: CSS Fundamentals</a>
+            <a href="#unit-4" class="unit-nav-btn">Next: JavaScript Basics <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+          </div>
+        </section>
+
+
+        <!-- ══════════════════════════════════════════════
+             UNIT 4 — JavaScript Basics
+             ══════════════════════════════════════════════ -->
+        <section class="unit-section" id="unit-4" aria-labelledby="unit-4-title">
+          <div class="unit-section-header">
+            <div class="unit-big-num s4" aria-hidden="true">4</div>
+            <div class="unit-section-meta">
+              <h2 class="unit-section-title" id="unit-4-title">JavaScript Basics</h2>
+              <div class="unit-badges-row">
+                <span class="badge badge-beginner">Beginner</span>
+                <span style="font-size:0.8rem;color:var(--gray-mid)">1 lesson &nbsp;·&nbsp; 1 video &nbsp;·&nbsp; 1 quiz &nbsp;·&nbsp; 1 download</span>
+              </div>
+              <p class="unit-section-sub">Your first steps in JavaScript — variables, functions, conditionals, loops, and how JS thinks. By the end you'll understand how code runs in the browser.</p>
+            </div>
+          </div>
+
+          <!-- Lesson -->
+          <div class="resource-sub-header">
+            <div class="icon" style="background:rgba(201,128,138,0.12);color:var(--dusty-rose)"><i class="fa-solid fa-book-open" aria-hidden="true"></i></div>
+            <h4>Lesson</h4>
+            <span class="count">14 min read</span>
+          </div>
+          <div class="accordion-list" role="list">
+            <div class="accordion-item reveal" role="listitem">
+              <div class="accordion-header" role="button" aria-expanded="false" tabindex="0">
+                <div class="accordion-header-left">
+                  <div class="accordion-icon" style="background:rgba(201,128,138,0.12);color:var(--dusty-rose)">
+                    <i class="fa-brands fa-js" aria-hidden="true"></i>
+                  </div>
+                  <div>
+                    <div style="font-weight:600;font-size:0.95rem;color:var(--charcoal)">JavaScript Basics</div>
+                    <div class="accordion-meta">
+                      <span class="badge badge-beginner">Beginner</span>
+                      <span style="font-size:0.78rem;color:var(--gray-mid)"><i class="fa-regular fa-clock" aria-hidden="true"></i> 14 min read</span>
+                    </div>
+                  </div>
+                </div>
+                <i class="fa-solid fa-chevron-down accordion-chevron" aria-hidden="true"></i>
+              </div>
+              <div class="accordion-body">
+                <div class="accordion-content">
+                  <div class="lesson-content">
+                    <h3>What is JavaScript?</h3>
+                    <p>JavaScript is the programming language of the web. HTML structures content, CSS styles it, and JavaScript makes it <em>interactive</em>.</p>
+                    <div class="code-block">
+                      <div class="code-block-header"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
+                      <pre><span class="cm">// Variables</span>
+<span class="kw">const</span> name = <span class="str">"Alex"</span>;
+<span class="kw">let</span> score = 0;
+
+<span class="cm">// Function</span>
+<span class="kw">function</span> greet(student) {
+  <span class="kw">return</span> <span class="str">`Welcome, ${student}!`</span>;
+}
+
+<span class="cm">// Conditional</span>
+<span class="kw">if</span> (score >= 60) {
+  console.log(<span class="str">"Passed!"</span>);
+} <span class="kw">else</span> {
+  console.log(<span class="str">"Keep studying."</span>);
+}</pre>
+                    </div>
+                    <h3>Variables and Types</h3>
+                    <p>Use <code style="font-family:var(--font-mono);font-size:0.85em">const</code> for values that won't change and <code style="font-family:var(--font-mono);font-size:0.85em">let</code> for values that will. Avoid <code style="font-family:var(--font-mono);font-size:0.85em">var</code> — it has confusing scoping rules. JavaScript is dynamically typed: a variable can hold a string, number, boolean, array, or object.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Video -->
+          <div class="resource-sub-header">
+            <div class="icon" style="background:rgba(201,128,138,0.1);color:var(--dusty-rose)"><i class="fa-brands fa-youtube" aria-hidden="true"></i></div>
+            <h4>Video</h4>
+            <span class="count">1 video · 3h 26m</span>
+          </div>
+          <div class="unit-video-grid">
+            <div class="card video-card reveal" data-youtube="PkZNo7MFNFg">
+              <div class="video-thumbnail" style="background:linear-gradient(135deg,#fceef5,#f0d8e8)">
+                <div class="video-play-btn" aria-hidden="true"><i class="fa-solid fa-play" style="margin-left:3px"></i></div>
+              </div>
+              <div class="card-body">
+                <h4>JavaScript for Beginners — Full Course</h4>
+                <div class="video-meta">
+                  <span><i class="fa-brands fa-youtube" aria-hidden="true" style="color:#c9808a"></i> freeCodeCamp</span>
+                  <span>3h 26m</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quiz -->
+          <div class="resource-sub-header">
+            <div class="icon" style="background:rgba(232,168,124,0.12);color:#c8885c"><i class="fa-solid fa-circle-question" aria-hidden="true"></i></div>
+            <h4>Quiz</h4>
+            <span class="count">5 questions · ~5 min</span>
+          </div>
+          <div class="quiz-card-shell reveal">
+            <div class="quiz-card-header">
+              <div style="display:flex;align-items:center;gap:12px">
+                <div style="width:36px;height:36px;border-radius:9px;background:rgba(201,128,138,0.12);display:flex;align-items:center;justify-content:center;color:var(--dusty-rose)"><i class="fa-brands fa-js" aria-hidden="true"></i></div>
+                <div><h3>JavaScript Fundamentals Quiz</h3><span style="font-size:0.78rem;color:var(--gray-mid)">5 questions &nbsp;·&nbsp; ~5 min</span></div>
+              </div>
+              <span class="badge badge-intermediate">Intermediate</span>
+            </div>
+            <div class="quiz-card-body">
+              <div id="quiz-js" data-quiz>
+                <div class="quiz-progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"><div class="quiz-progress-fill" style="width:0%"></div></div>
+                <div class="quiz-question active">
+                  <h3>1. Which keyword declares a variable that cannot be reassigned?</h3>
+                  <div class="quiz-options">
+                    <button class="quiz-option" data-correct="false">let</button>
+                    <button class="quiz-option" data-correct="false">var</button>
+                    <button class="quiz-option" data-correct="true">const</button>
+                    <button class="quiz-option" data-correct="false">static</button>
+                  </div>
+                  <div class="quiz-nav"><button class="btn btn-primary btn-sm quiz-next-btn">Next <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button></div>
+                </div>
+                <div class="quiz-question">
+                  <h3>2. What will <code style="font-family:var(--font-mono)">typeof "hello"</code> return?</h3>
+                  <div class="quiz-options">
+                    <button class="quiz-option" data-correct="false">"text"</button>
+                    <button class="quiz-option" data-correct="true">"string"</button>
+                    <button class="quiz-option" data-correct="false">"word"</button>
+                    <button class="quiz-option" data-correct="false">"char"</button>
+                  </div>
+                  <div class="quiz-nav"><button class="btn btn-primary btn-sm quiz-next-btn">Next <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button></div>
+                </div>
+                <div class="quiz-question">
+                  <h3>3. Which method adds an item to the end of an array?</h3>
+                  <div class="quiz-options">
+                    <button class="quiz-option" data-correct="false">array.add()</button>
+                    <button class="quiz-option" data-correct="false">array.append()</button>
+                    <button class="quiz-option" data-correct="true">array.push()</button>
+                    <button class="quiz-option" data-correct="false">array.insert()</button>
+                  </div>
+                  <div class="quiz-nav"><button class="btn btn-primary btn-sm quiz-next-btn">Next <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button></div>
+                </div>
+                <div class="quiz-question">
+                  <h3>4. How do you write a comment in JavaScript?</h3>
+                  <div class="quiz-options">
+                    <button class="quiz-option" data-correct="false">&lt;!-- comment --&gt;</button>
+                    <button class="quiz-option" data-correct="false"># comment</button>
+                    <button class="quiz-option" data-correct="true">// comment</button>
+                    <button class="quiz-option" data-correct="false">** comment **</button>
+                  </div>
+                  <div class="quiz-nav"><button class="btn btn-primary btn-sm quiz-next-btn">Next <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button></div>
+                </div>
+                <div class="quiz-question">
+                  <h3>5. Which method listens for a user event on a DOM element?</h3>
+                  <div class="quiz-options">
+                    <button class="quiz-option" data-correct="false">element.onEvent()</button>
+                    <button class="quiz-option" data-correct="false">element.attachEvent()</button>
+                    <button class="quiz-option" data-correct="true">element.addEventListener()</button>
+                    <button class="quiz-option" data-correct="false">element.listenFor()</button>
+                  </div>
+                  <div class="quiz-nav"><button class="btn btn-primary btn-sm quiz-next-btn">Finish <i class="fa-solid fa-flag-checkered" aria-hidden="true"></i></button></div>
+                </div>
+                <div class="quiz-score-card">
+                  <div class="quiz-score-number"></div>
+                  <h3>Quiz Complete!</h3>
+                  <p>Excellent. Keep building — next up is DOM Manipulation.</p>
+                  <button class="btn btn-secondary quiz-restart-btn">Try Again</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Download -->
+          <div class="resource-sub-header">
+            <div class="icon" style="background:rgba(155,142,196,0.1);color:var(--lavender)"><i class="fa-solid fa-download" aria-hidden="true"></i></div>
+            <h4>Download</h4>
+            <span class="count">1 file</span>
+          </div>
+          <div class="unit-dl-grid">
+            <div class="card download-card reveal">
+              <div class="download-card-top"><div><span class="file-type-badge file-js">JS</span></div></div>
+              <h4>JavaScript Quick Reference</h4>
+              <p>Essential syntax, array/string methods, DOM selection, event handling, and async patterns.</p>
+              <div class="download-card-footer">
+                <span class="file-size">~5 KB</span>
+                <button class="btn btn-primary btn-sm" onclick="downloadJSReference()"><i class="fa-solid fa-download" aria-hidden="true"></i> Download</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="unit-nav-row">
+            <a href="#unit-3" class="unit-nav-btn"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Unit 3: CSS Layouts</a>
+            <a href="#unit-5" class="unit-nav-btn">Next: JS &amp; the DOM <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+          </div>
+        </section>
+
+
+        <!-- ══════════════════════════════════════════════
+             UNIT 5 — JavaScript & the DOM
+             ══════════════════════════════════════════════ -->
+        <section class="unit-section" id="unit-5" aria-labelledby="unit-5-title">
+          <div class="unit-section-header">
+            <div class="unit-big-num s5" aria-hidden="true">5</div>
+            <div class="unit-section-meta">
+              <h2 class="unit-section-title" id="unit-5-title">JavaScript &amp; the DOM</h2>
+              <div class="unit-badges-row">
+                <span class="badge badge-intermediate">Intermediate</span>
+                <span style="font-size:0.8rem;color:var(--gray-mid)">1 lesson &nbsp;·&nbsp; 1 video</span>
+              </div>
+              <p class="unit-section-sub">Learn how JavaScript reads and modifies live HTML — selecting elements, changing content, toggling classes, and handling user events like clicks and form submits.</p>
+            </div>
+          </div>
+
+          <!-- Lesson -->
+          <div class="resource-sub-header">
+            <div class="icon" style="background:rgba(138,171,138,0.12);color:#6a8b6a"><i class="fa-solid fa-book-open" aria-hidden="true"></i></div>
+            <h4>Lesson</h4>
+            <span class="count">18 min read</span>
+          </div>
+          <div class="accordion-list" role="list">
+            <div class="accordion-item reveal" role="listitem">
+              <div class="accordion-header" role="button" aria-expanded="false" tabindex="0">
+                <div class="accordion-header-left">
+                  <div class="accordion-icon" style="background:rgba(138,171,138,0.12);color:var(--sage)">
+                    <i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i>
+                  </div>
+                  <div>
+                    <div style="font-weight:600;font-size:0.95rem;color:var(--charcoal)">DOM Manipulation</div>
+                    <div class="accordion-meta">
+                      <span class="badge badge-intermediate">Intermediate</span>
+                      <span style="font-size:0.78rem;color:var(--gray-mid)"><i class="fa-regular fa-clock" aria-hidden="true"></i> 18 min read</span>
+                    </div>
+                  </div>
+                </div>
+                <i class="fa-solid fa-chevron-down accordion-chevron" aria-hidden="true"></i>
+              </div>
+              <div class="accordion-body">
+                <div class="accordion-content">
+                  <div class="lesson-content">
+                    <h3>The Document Object Model</h3>
+                    <p>The DOM is the browser's live representation of an HTML page as a tree of objects. JavaScript can read, modify, add, and remove any element in this tree.</p>
+                    <div class="code-block">
+                      <div class="code-block-header"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
+                      <pre><span class="cm">// Select elements</span>
+<span class="kw">const</span> btn   = document.querySelector(<span class="str">'#myButton'</span>);
+<span class="kw">const</span> items = document.querySelectorAll(<span class="str">'.list-item'</span>);
+
+<span class="cm">// Modify content &amp; styles</span>
+btn.textContent = <span class="str">'Click me!'</span>;
+btn.classList.add(<span class="str">'active'</span>);
+
+<span class="cm">// Handle events</span>
+btn.addEventListener(<span class="str">'click'</span>, () => {
+  document.body.classList.toggle(<span class="str">'dark-mode'</span>);
+});</pre>
+                    </div>
+                    <h3>Event Listeners</h3>
+                    <p><code style="font-family:var(--font-mono);font-size:0.85em">addEventListener</code> listens for user events (click, submit, keydown, scroll) and runs a callback. Always prefer this over inline <code style="font-family:var(--font-mono);font-size:0.85em">onclick=""</code> attributes — it keeps JS and HTML separated.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Video -->
+          <div class="resource-sub-header">
+            <div class="icon" style="background:rgba(201,128,138,0.1);color:var(--dusty-rose)"><i class="fa-brands fa-youtube" aria-hidden="true"></i></div>
+            <h4>Video</h4>
+            <span class="count">1 video · 44 min</span>
+          </div>
+          <div class="unit-video-grid">
+            <div class="card video-card reveal" data-youtube="hdI2bqOjy3c">
+              <div class="video-thumbnail" style="background:linear-gradient(135deg,#ede8f5,#c8c0e8)">
+                <div class="video-play-btn" aria-hidden="true"><i class="fa-solid fa-play" style="margin-left:3px"></i></div>
+              </div>
+              <div class="card-body">
+                <h4>JavaScript DOM Manipulation Crash Course</h4>
+                <div class="video-meta">
+                  <span><i class="fa-brands fa-youtube" aria-hidden="true" style="color:#c9808a"></i> Traversy Media</span>
+                  <span>44 min</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <p class="no-resource-note" style="margin-top:12px"><i class="fa-solid fa-info-circle" aria-hidden="true"></i> No quiz or downloads for this unit yet — check back soon.</p>
+
+          <div class="unit-nav-row">
+            <a href="#unit-4" class="unit-nav-btn"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Unit 4: JavaScript Basics</a>
+            <a href="#unit-6" class="unit-nav-btn">Next: Responsive Design <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+          </div>
+        </section>
+
+
+        <!-- ══════════════════════════════════════════════
+             UNIT 6 — Responsive Design
+             ══════════════════════════════════════════════ -->
+        <section class="unit-section" id="unit-6" aria-labelledby="unit-6-title">
+          <div class="unit-section-header">
+            <div class="unit-big-num s6" aria-hidden="true">6</div>
+            <div class="unit-section-meta">
+              <h2 class="unit-section-title" id="unit-6-title">Responsive Design</h2>
+              <div class="unit-badges-row">
+                <span class="badge badge-intermediate">Intermediate</span>
+                <span style="font-size:0.8rem;color:var(--gray-mid)">1 lesson &nbsp;·&nbsp; 1 download</span>
+              </div>
+              <p class="unit-section-sub">Build layouts that adapt beautifully to any screen size — from 375px mobile to 1440px desktop — using media queries, the viewport meta tag, and mobile-first thinking.</p>
+            </div>
+          </div>
+
+          <!-- Lesson -->
+          <div class="resource-sub-header">
+            <div class="icon" style="background:rgba(155,142,196,0.12);color:#7b6ea4"><i class="fa-solid fa-book-open" aria-hidden="true"></i></div>
+            <h4>Lesson</h4>
+            <span class="count">16 min read</span>
+          </div>
+          <div class="accordion-list" role="list">
+            <div class="accordion-item reveal" role="listitem">
+              <div class="accordion-header" role="button" aria-expanded="false" tabindex="0">
+                <div class="accordion-header-left">
+                  <div class="accordion-icon" style="background:rgba(155,142,196,0.12);color:var(--lavender)">
+                    <i class="fa-solid fa-mobile-screen-button" aria-hidden="true"></i>
+                  </div>
+                  <div>
+                    <div style="font-weight:600;font-size:0.95rem;color:var(--charcoal)">Responsive Design</div>
+                    <div class="accordion-meta">
+                      <span class="badge badge-intermediate">Intermediate</span>
+                      <span style="font-size:0.78rem;color:var(--gray-mid)"><i class="fa-regular fa-clock" aria-hidden="true"></i> 16 min read</span>
+                    </div>
+                  </div>
+                </div>
+                <i class="fa-solid fa-chevron-down accordion-chevron" aria-hidden="true"></i>
+              </div>
+              <div class="accordion-body">
+                <div class="accordion-content">
+                  <div class="lesson-content">
+                    <h3>What is Responsive Design?</h3>
+                    <p>Responsive design means building websites that look and work well on <em>any</em> screen size. In 2024, over 60% of web traffic comes from mobile devices (StatCounter, 2024), making this a non-negotiable skill.</p>
+                    <div class="code-block">
+                      <div class="code-block-header"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
+                      <pre><span class="cm">/* Mobile-first */</span>
+<span class="tag">.grid</span> { <span class="attr">grid-template-columns</span>: <span class="str">1fr</span>; }
+
+<span class="kw">@media</span> (min-width: <span class="str">768px</span>) {
+  <span class="tag">.grid</span> { <span class="attr">grid-template-columns</span>: <span class="str">repeat(2, 1fr)</span>; }
+}
+
+<span class="kw">@media</span> (min-width: <span class="str">1024px</span>) {
+  <span class="tag">.grid</span> { <span class="attr">grid-template-columns</span>: <span class="str">repeat(3, 1fr)</span>; }
+}</pre>
+                    </div>
+                    <h3>The Viewport Meta Tag</h3>
+                    <p>Always include <code style="font-family:var(--font-mono);font-size:0.85em">&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</code> — without it, mobile browsers render at desktop width and scale down, breaking your layout.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Download -->
+          <div class="resource-sub-header">
+            <div class="icon" style="background:rgba(155,142,196,0.1);color:var(--lavender)"><i class="fa-solid fa-download" aria-hidden="true"></i></div>
+            <h4>Download</h4>
+            <span class="count">1 file</span>
+          </div>
+          <div class="unit-dl-grid">
+            <div class="card download-card reveal">
+              <div class="download-card-top"><div><span class="file-type-badge file-pdf">TXT</span></div></div>
+              <h4>Web Design Checklist</h4>
+              <p>A launch checklist covering accessibility, responsive breakpoints, performance, SEO basics, and cross-browser testing.</p>
+              <div class="download-card-footer">
+                <span class="file-size">~2 KB</span>
+                <button class="btn btn-primary btn-sm" onclick="downloadChecklist()"><i class="fa-solid fa-download" aria-hidden="true"></i> Download</button>
+              </div>
+            </div>
+          </div>
+          <p class="no-resource-note" style="margin-top:12px"><i class="fa-solid fa-info-circle" aria-hidden="true"></i> No video or quiz for this unit yet — check back soon.</p>
+
+          <div class="unit-nav-row">
+            <a href="#unit-5" class="unit-nav-btn"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Unit 5: JS &amp; the DOM</a>
+            <a href="tutors.html" class="unit-nav-btn" style="background:var(--sage);color:white;border-color:var(--sage)">
+              <i class="fa-solid fa-calendar-check" aria-hidden="true"></i> Book a Tutor Session
+            </a>
+          </div>
+        </section>
+
+      </div><!-- /units -->
+    </div><!-- /curriculum-layout -->
+  </div><!-- /container -->
+</section>
+
+
+<!-- Sidebar active state via Intersection Observer -->
+<script>
+  const sections = document.querySelectorAll('.unit-section');
+  const sideLinks = document.querySelectorAll('.sidebar-unit-link');
+
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const id = entry.target.id; // e.g. "unit-1"
+        const num = id.replace('unit-', '');
+        sideLinks.forEach(l => l.classList.remove('active'));
+        const active = document.querySelector(`.sidebar-unit-link[data-unit="${num}"]`);
+        if (active) active.classList.add('active');
+      }
+    });
+  }, { threshold: 0.25 });
+
+  sections.forEach(s => obs.observe(s));
+</script>
+
+
+<!-- VIDEO MODAL -->
+<div id="video-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-label="Video player" aria-hidden="true">
+  <div class="modal" style="max-width:800px">
+    <div class="modal-header">
+      <h3 style="font-family:var(--font-serif)">Video Tutorial</h3>
+      <button class="modal-close" aria-label="Close video"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
+    </div>
+    <div style="padding:0 0 16px">
+      <div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden">
+        <iframe id="yt-iframe" src="" style="position:absolute;top:0;left:0;width:100%;height:100%;border:none"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen title="Video tutorial"></iframe>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- FOOTER -->
+<svg class="footer-wave" viewBox="0 0 1440 60" preserveAspectRatio="none" aria-hidden="true">
+  <path d="M0,30 C360,60 1080,0 1440,30 L1440,60 L0,60 Z" fill="var(--sage-light)"/>
+</svg>
+<footer class="footer" role="contentinfo">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <a href="index.html" class="footer-logo">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="12" cy="12" r="9" stroke="var(--sage)" stroke-width="1.5"/>
+          <path d="M12 3C12 3 8 7 8 12C8 17 12 21 12 21" stroke="var(--sage)" stroke-width="1.5"/>
+          <path d="M12 3C12 3 16 7 16 12C16 17 12 21 12 21" stroke="var(--sage)" stroke-width="1.5"/>
+          <line x1="3" y1="12" x2="21" y2="12" stroke="var(--sage)" stroke-width="1.5"/>
+        </svg>Build-a-Web
+      </a>
+      <p>A student-made learning hub teaching HTML, CSS, and JavaScript to high school students everywhere.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Pages</h4>
+      <ul role="list">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="schedule.html">Schedule</a></li>
+        <li><a href="tutors.html">Tutors</a></li>
+        <li><a href="dashboard.html">Dashboard</a></li>
+        <li><a href="resources.html">Resources</a></li>
+        <li><a href="about.html">About</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <div class="footer-contact-item"><i class="fa-solid fa-envelope" aria-hidden="true"></i> hello@buildaweb.edu</div>
+      <div class="footer-contact-item"><i class="fa-solid fa-location-dot" aria-hidden="true"></i> FBLA 2025–2026</div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p class="footer-tagline">Built with care by students, for students.</p>
+    <p class="footer-copy">&copy; 2026 Build-a-Web. FBLA Website Design.</p>
+  </div>
+</footer>
+
+<button class="back-to-top" aria-label="Back to top"><i class="fa-solid fa-arrow-up" aria-hidden="true"></i> Top</button>
+<script src="script.js"></script>
+</body>
+</html>
