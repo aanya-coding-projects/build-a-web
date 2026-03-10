@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Browse and register for Build-a-Web tutoring sessions, workshops, and study groups." />
+  <title>Schedule | Build-a-Web</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    .schedule-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 24px;
+    }
+    @media(max-width:1024px){ .schedule-grid { grid-template-columns: 1fr 1fr; } }
+    @media(max-width:640px) { .schedule-grid { grid-template-columns: 1fr; } }
+
+    .session-card { border-radius: var(--radius-card); overflow:hidden; box-shadow: var(--card-shadow); background:var(--white); transition: all var(--transition); }
+    .session-card:hover { transform:translateY(-4px); box-shadow: var(--card-shadow-hover); }
+
+    .calendar-layout {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 40px;
+      align-items: start;
+    }
+    @media(max-width:1024px){ .calendar-layout { grid-template-columns:1fr; } }
+
+    /* Form success message */
+    .form-success {
+      display: none;
+      background: rgba(138,171,138,0.12);
+      border: 1.5px solid var(--sage-mid);
+      border-radius: 10px;
+      padding: 16px;
+      text-align: center;
+      color: #3a6a3a;
+      font-size: 0.9rem;
+      margin-top: 16px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav" role="navigation" aria-label="Main navigation">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5"/>
+        <path d="M12 3C12 3 8 7 8 12C8 17 12 21 12 21" stroke="currentColor" stroke-width="1.5"/>
+        <path d="M12 3C12 3 16 7 16 12C16 17 12 21 12 21" stroke="currentColor" stroke-width="1.5"/>
+        <line x1="3" y1="12" x2="21" y2="12" stroke="currentColor" stroke-width="1.5"/>
+        <line x1="4.5" y1="7.5" x2="19.5" y2="7.5" stroke="currentColor" stroke-width="1.5"/>
+        <line x1="4.5" y1="16.5" x2="19.5" y2="16.5" stroke="currentColor" stroke-width="1.5"/>
+      </svg>
+      Build-a-Web
+    </a>
+    <ul class="nav-links" role="list">
+      <li><a href="index.html" class="nav-link">Home</a></li>
+      <li><a href="schedule.html" class="nav-link">Schedule</a></li>
+      <li><a href="dashboard.html" class="nav-link">Dashboard</a></li>
+      <li><a href="resources.html" class="nav-link">Resources</a></li>
+      <li><a href="about.html" class="nav-link">About</a></li>
+      <li><a href="resources.html" class="nav-link nav-cta">Start Learning</a></li>
+    </ul>
+    <button class="nav-hamburger" aria-label="Open menu"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+<div class="nav-overlay"></div>
+<nav class="nav-drawer">
+  <a href="index.html" class="drawer-link">Home</a>
+  <a href="schedule.html" class="drawer-link">Schedule</a>
+  <a href="dashboard.html" class="drawer-link">Dashboard</a>
+  <a href="resources.html" class="drawer-link">Resources</a>
+  <a href="about.html" class="drawer-link">About</a>
+</nav>
+
+
+<!-- HERO -->
+<section class="hero hero-pattern-lines" style="min-height:50vh" aria-label="Schedule hero">
+  <div class="hero-bg">
+    <div class="hero-bg-pattern"></div>
+    <div class="blob blob-1" style="background:#d4e8d4"></div>
+    <div class="blob blob-2" style="background:#fceef5"></div>
+    <div class="blob blob-3" style="background:#ede8f5"></div>
+  </div>
+  <canvas class="particle-canvas" id="schedule-particles" aria-hidden="true"></canvas>
+  <div class="container hero-content" style="width:100%">
+    <div style="padding:120px 0 60px; max-width:640px">
+      <div class="hero-text">
+        <span class="hero-label">Sessions &amp; Events</span>
+        <h1 class="hero-title">Schedule</h1>
+        <p class="hero-subtitle">Browse tutoring sessions, live workshops, and study groups. Register for any session — all are free and open to students.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<svg class="wave-divider" viewBox="0 0 1440 60" preserveAspectRatio="none" aria-hidden="true">
+  <path d="M0,20 C360,60 1080,0 1440,40 L1440,60 L0,60 Z" fill="#fdf6ec"/>
+</svg>
+
+
+<!-- SESSIONS + CALENDAR LAYOUT -->
+<section class="section bg-cream" aria-labelledby="sessions-heading">
+  <div class="container">
+    <div class="calendar-layout">
+
+      <!-- LEFT: Sessions -->
+      <div>
+        <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px; margin-bottom:28px">
+          <div>
+            <span class="section-label">All Events</span>
+            <h2 class="section-title" id="sessions-heading" style="margin-bottom:0; text-align:left">Upcoming Sessions</h2>
+          </div>
+        </div>
+
+        <!-- Filter Pills -->
+        <div class="filter-group" style="justify-content:flex-start; margin-bottom:28px" role="group" aria-label="Filter sessions by type">
+          <button class="filter-pill active" data-filter="all">All Sessions</button>
+          <button class="filter-pill" data-filter="tutoring">Tutoring</button>
+          <button class="filter-pill" data-filter="workshop">Workshop</button>
+          <button class="filter-pill" data-filter="study-group">Study Group</button>
+        </div>
+
+        <div class="schedule-grid">
+
+          <!-- Session 1 -->
+          <article class="session-card reveal" data-type="workshop">
+            <div class="session-header" style="background:linear-gradient(135deg,#8aab8a,#6a8b6a)">
+              <i class="fa-solid fa-chalkboard-user" aria-hidden="true"></i>
+              <span class="session-title">HTML Fundamentals Workshop</span>
+            </div>
+            <div class="session-body">
+              <div class="session-meta">
+                <div class="session-meta-item"><i class="fa-regular fa-calendar" aria-hidden="true"></i> March 15, 2026</div>
+                <div class="session-meta-item"><i class="fa-regular fa-clock" aria-hidden="true"></i> 3:30 PM – 5:00 PM</div>
+                <div class="session-meta-item"><i class="fa-solid fa-hourglass-half" aria-hidden="true"></i> 90 minutes</div>
+                <div class="session-meta-item"><i class="fa-solid fa-person-chalkboard" aria-hidden="true"></i> Maya Chen</div>
+              </div>
+              <span class="badge badge-sage" style="margin-bottom:14px">Workshop</span>
+              <button class="btn btn-primary btn-sm" onclick="openModal('modal-s1')" aria-haspopup="dialog">Register</button>
+            </div>
+          </article>
+
+          <!-- Session 2 -->
+          <article class="session-card reveal reveal-delay-1" data-type="tutoring">
+            <div class="session-header" style="background:linear-gradient(135deg,#9b8ec4,#7b6ea4)">
+              <i class="fa-solid fa-person-chalkboard" aria-hidden="true"></i>
+              <span class="session-title">CSS Layouts &amp; Flexbox</span>
+            </div>
+            <div class="session-body">
+              <div class="session-meta">
+                <div class="session-meta-item"><i class="fa-regular fa-calendar" aria-hidden="true"></i> March 17, 2026</div>
+                <div class="session-meta-item"><i class="fa-regular fa-clock" aria-hidden="true"></i> 4:00 PM – 5:30 PM</div>
+                <div class="session-meta-item"><i class="fa-solid fa-hourglass-half" aria-hidden="true"></i> 90 minutes</div>
+                <div class="session-meta-item"><i class="fa-solid fa-person-chalkboard" aria-hidden="true"></i> Jordan Park</div>
+              </div>
+              <span class="badge badge-lavender" style="margin-bottom:14px">Tutoring</span>
+              <button class="btn btn-primary btn-sm" onclick="openModal('modal-s2')" aria-haspopup="dialog">Register</button>
+            </div>
+          </article>
+
+          <!-- Session 3 -->
+          <article class="session-card reveal reveal-delay-2" data-type="study-group">
+            <div class="session-header" style="background:linear-gradient(135deg,#c9808a,#a86070)">
+              <i class="fa-solid fa-users" aria-hidden="true"></i>
+              <span class="session-title">JavaScript Basics Study Group</span>
+            </div>
+            <div class="session-body">
+              <div class="session-meta">
+                <div class="session-meta-item"><i class="fa-regular fa-calendar" aria-hidden="true"></i> March 20, 2026</div>
+                <div class="session-meta-item"><i class="fa-regular fa-clock" aria-hidden="true"></i> 5:00 PM – 6:30 PM</div>
+                <div class="session-meta-item"><i class="fa-solid fa-hourglass-half" aria-hidden="true"></i> 90 minutes</div>
+                <div class="session-meta-item"><i class="fa-solid fa-users" aria-hidden="true"></i> Open to all</div>
+              </div>
+              <span class="badge badge-rose" style="margin-bottom:14px">Study Group</span>
+              <button class="btn btn-primary btn-sm" onclick="openModal('modal-s3')" aria-haspopup="dialog">Register</button>
+            </div>
+          </article>
+
+          <!-- Session 4 -->
+          <article class="session-card reveal" data-type="workshop">
+            <div class="session-header" style="background:linear-gradient(135deg,#e8a87c,#c8885c)">
+              <i class="fa-solid fa-chalkboard-user" aria-hidden="true"></i>
+              <span class="session-title">Responsive Design Workshop</span>
+            </div>
+            <div class="session-body">
+              <div class="session-meta">
+                <div class="session-meta-item"><i class="fa-regular fa-calendar" aria-hidden="true"></i> March 22, 2026</div>
+                <div class="session-meta-item"><i class="fa-regular fa-clock" aria-hidden="true"></i> 2:00 PM – 3:30 PM</div>
+                <div class="session-meta-item"><i class="fa-solid fa-hourglass-half" aria-hidden="true"></i> 90 minutes</div>
+                <div class="session-meta-item"><i class="fa-solid fa-person-chalkboard" aria-hidden="true"></i> Priya Nair</div>
+              </div>
+              <span class="badge badge-peach" style="margin-bottom:14px">Workshop</span>
+              <button class="btn btn-primary btn-sm" onclick="openModal('modal-s4')" aria-haspopup="dialog">Register</button>
+            </div>
+          </article>
+
+          <!-- Session 5 -->
+          <article class="session-card reveal reveal-delay-1" data-type="tutoring">
+            <div class="session-header" style="background:linear-gradient(135deg,#8aab8a,#a8c4a8)">
+              <i class="fa-solid fa-person-chalkboard" aria-hidden="true"></i>
+              <span class="session-title">DOM Manipulation Tutoring</span>
+            </div>
+            <div class="session-body">
+              <div class="session-meta">
+                <div class="session-meta-item"><i class="fa-regular fa-calendar" aria-hidden="true"></i> March 25, 2026</div>
+                <div class="session-meta-item"><i class="fa-regular fa-clock" aria-hidden="true"></i> 4:30 PM – 6:00 PM</div>
+                <div class="session-meta-item"><i class="fa-solid fa-hourglass-half" aria-hidden="true"></i> 90 minutes</div>
+                <div class="session-meta-item"><i class="fa-solid fa-person-chalkboard" aria-hidden="true"></i> Alex Rivera</div>
+              </div>
+              <span class="badge badge-sage" style="margin-bottom:14px">Tutoring</span>
+              <button class="btn btn-primary btn-sm" onclick="openModal('modal-s5')" aria-haspopup="dialog">Register</button>
+            </div>
+          </article>
+
+          <!-- Session 6 -->
+          <article class="session-card reveal reveal-delay-2" data-type="study-group">
+            <div class="session-header" style="background:linear-gradient(135deg,#9b8ec4,#bbaae4)">
+              <i class="fa-solid fa-users" aria-hidden="true"></i>
+              <span class="session-title">CSS Grid Mastery Study Group</span>
+            </div>
+            <div class="session-body">
+              <div class="session-meta">
+                <div class="session-meta-item"><i class="fa-regular fa-calendar" aria-hidden="true"></i> March 27, 2026</div>
+                <div class="session-meta-item"><i class="fa-regular fa-clock" aria-hidden="true"></i> 3:00 PM – 4:30 PM</div>
+                <div class="session-meta-item"><i class="fa-solid fa-hourglass-half" aria-hidden="true"></i> 90 minutes</div>
+                <div class="session-meta-item"><i class="fa-solid fa-users" aria-hidden="true"></i> Open to all</div>
+              </div>
+              <span class="badge badge-lavender" style="margin-bottom:14px">Study Group</span>
+              <button class="btn btn-primary btn-sm" onclick="openModal('modal-s6')" aria-haspopup="dialog">Register</button>
+            </div>
+          </article>
+
+          <!-- Session 7 -->
+          <article class="session-card reveal" data-type="workshop">
+            <div class="session-header" style="background:linear-gradient(135deg,#c9808a,#d9a0aa)">
+              <i class="fa-solid fa-chalkboard-user" aria-hidden="true"></i>
+              <span class="session-title">JavaScript Events Workshop</span>
+            </div>
+            <div class="session-body">
+              <div class="session-meta">
+                <div class="session-meta-item"><i class="fa-regular fa-calendar" aria-hidden="true"></i> April 1, 2026</div>
+                <div class="session-meta-item"><i class="fa-regular fa-clock" aria-hidden="true"></i> 4:00 PM – 5:30 PM</div>
+                <div class="session-meta-item"><i class="fa-solid fa-hourglass-half" aria-hidden="true"></i> 90 minutes</div>
+                <div class="session-meta-item"><i class="fa-solid fa-person-chalkboard" aria-hidden="true"></i> Maya Chen</div>
+              </div>
+              <span class="badge badge-rose" style="margin-bottom:14px">Workshop</span>
+              <button class="btn btn-primary btn-sm" onclick="openModal('modal-s7')" aria-haspopup="dialog">Register</button>
+            </div>
+          </article>
+
+          <!-- Session 8 -->
+          <article class="session-card reveal reveal-delay-1" data-type="tutoring">
+            <div class="session-header" style="background:linear-gradient(135deg,#e8a87c,#f0c8a0)">
+              <i class="fa-solid fa-person-chalkboard" aria-hidden="true"></i>
+              <span class="session-title">HTML Forms &amp; Accessibility</span>
+            </div>
+            <div class="session-body">
+              <div class="session-meta">
+                <div class="session-meta-item"><i class="fa-regular fa-calendar" aria-hidden="true"></i> April 3, 2026</div>
+                <div class="session-meta-item"><i class="fa-regular fa-clock" aria-hidden="true"></i> 3:30 PM – 5:00 PM</div>
+                <div class="session-meta-item"><i class="fa-solid fa-hourglass-half" aria-hidden="true"></i> 90 minutes</div>
+                <div class="session-meta-item"><i class="fa-solid fa-person-chalkboard" aria-hidden="true"></i> Jordan Park</div>
+              </div>
+              <span class="badge badge-peach" style="margin-bottom:14px">Tutoring</span>
+              <button class="btn btn-primary btn-sm" onclick="openModal('modal-s8')" aria-haspopup="dialog">Register</button>
+            </div>
+          </article>
+
+          <!-- Session 9 -->
+          <article class="session-card reveal reveal-delay-2" data-type="study-group">
+            <div class="session-header" style="background:linear-gradient(135deg,#8aab8a,#b0ccb0)">
+              <i class="fa-solid fa-users" aria-hidden="true"></i>
+              <span class="session-title">Build Your Portfolio Study Group</span>
+            </div>
+            <div class="session-body">
+              <div class="session-meta">
+                <div class="session-meta-item"><i class="fa-regular fa-calendar" aria-hidden="true"></i> April 5, 2026</div>
+                <div class="session-meta-item"><i class="fa-regular fa-clock" aria-hidden="true"></i> 2:30 PM – 4:00 PM</div>
+                <div class="session-meta-item"><i class="fa-solid fa-hourglass-half" aria-hidden="true"></i> 90 minutes</div>
+                <div class="session-meta-item"><i class="fa-solid fa-users" aria-hidden="true"></i> Open to all</div>
+              </div>
+              <span class="badge badge-sage" style="margin-bottom:14px">Study Group</span>
+              <button class="btn btn-primary btn-sm" onclick="openModal('modal-s9')" aria-haspopup="dialog">Register</button>
+            </div>
+          </article>
+
+          <!-- Session 10 -->
+          <article class="session-card reveal" data-type="workshop">
+            <div class="session-header" style="background:linear-gradient(135deg,#9b8ec4,#c8c0e8)">
+              <i class="fa-solid fa-chalkboard-user" aria-hidden="true"></i>
+              <span class="session-title">CSS Animations Workshop</span>
+            </div>
+            <div class="session-body">
+              <div class="session-meta">
+                <div class="session-meta-item"><i class="fa-regular fa-calendar" aria-hidden="true"></i> April 8, 2026</div>
+                <div class="session-meta-item"><i class="fa-regular fa-clock" aria-hidden="true"></i> 4:00 PM – 5:30 PM</div>
+                <div class="session-meta-item"><i class="fa-solid fa-hourglass-half" aria-hidden="true"></i> 90 minutes</div>
+                <div class="session-meta-item"><i class="fa-solid fa-person-chalkboard" aria-hidden="true"></i> Priya Nair</div>
+              </div>
+              <span class="badge badge-lavender" style="margin-bottom:14px">Workshop</span>
+              <button class="btn btn-primary btn-sm" onclick="openModal('modal-s10')" aria-haspopup="dialog">Register</button>
+            </div>
+          </article>
+
+          <!-- Session 11 -->
+          <article class="session-card reveal reveal-delay-1" data-type="tutoring">
+            <div class="session-header" style="background:linear-gradient(135deg,#c9808a,#e0a8b4)">
+              <i class="fa-solid fa-person-chalkboard" aria-hidden="true"></i>
+              <span class="session-title">JavaScript Promises &amp; Fetch</span>
+            </div>
+            <div class="session-body">
+              <div class="session-meta">
+                <div class="session-meta-item"><i class="fa-regular fa-calendar" aria-hidden="true"></i> April 10, 2026</div>
+                <div class="session-meta-item"><i class="fa-regular fa-clock" aria-hidden="true"></i> 5:00 PM – 6:30 PM</div>
+                <div class="session-meta-item"><i class="fa-solid fa-hourglass-half" aria-hidden="true"></i> 90 minutes</div>
+                <div class="session-meta-item"><i class="fa-solid fa-person-chalkboard" aria-hidden="true"></i> Alex Rivera</div>
+              </div>
+              <span class="badge badge-rose" style="margin-bottom:14px">Tutoring</span>
+              <button class="btn btn-primary btn-sm" onclick="openModal('modal-s11')" aria-haspopup="dialog">Register</button>
+            </div>
+          </article>
+
+          <!-- Session 12 -->
+          <article class="session-card reveal reveal-delay-2" data-type="study-group">
+            <div class="session-header" style="background:linear-gradient(135deg,#e8a87c,#e8c8a0)">
+              <i class="fa-solid fa-users" aria-hidden="true"></i>
+              <span class="session-title">Final Project Showcase</span>
+            </div>
+            <div class="session-body">
+              <div class="session-meta">
+                <div class="session-meta-item"><i class="fa-regular fa-calendar" aria-hidden="true"></i> April 15, 2026</div>
+                <div class="session-meta-item"><i class="fa-regular fa-clock" aria-hidden="true"></i> 3:00 PM – 5:00 PM</div>
+                <div class="session-meta-item"><i class="fa-solid fa-hourglass-half" aria-hidden="true"></i> 120 minutes</div>
+                <div class="session-meta-item"><i class="fa-solid fa-users" aria-hidden="true"></i> All welcome</div>
+              </div>
+              <span class="badge badge-peach" style="margin-bottom:14px">Study Group</span>
+              <button class="btn btn-primary btn-sm" onclick="openModal('modal-s12')" aria-haspopup="dialog">Register</button>
+            </div>
+          </article>
+
+        </div><!-- /schedule-grid -->
+      </div><!-- /left col -->
+
+
+      <!-- RIGHT: Calendar Widget -->
+      <aside>
+        <div style="position:sticky; top:88px">
+          <div class="calendar-widget" role="region" aria-label="Session calendar">
+            <div class="calendar-header">
+              <button class="calendar-nav-btn cal-prev" id="cal-prev" aria-label="Previous month">
+                <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+              </button>
+              <h3 class="calendar-month-label">March 2026</h3>
+              <button class="calendar-nav-btn cal-next" id="cal-next" aria-label="Next month">
+                <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+              </button>
+            </div>
+            <div class="calendar-days-header">
+              <div class="calendar-day-name">Su</div>
+              <div class="calendar-day-name">Mo</div>
+              <div class="calendar-day-name">Tu</div>
+              <div class="calendar-day-name">We</div>
+              <div class="calendar-day-name">Th</div>
+              <div class="calendar-day-name">Fr</div>
+              <div class="calendar-day-name">Sa</div>
+            </div>
+            <div class="calendar-grid" id="cal-grid" aria-label="Calendar days"></div>
+            <div class="calendar-sessions-panel" id="cal-sessions-panel" aria-live="polite"></div>
+          </div>
+        </div>
+      </aside>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================================
+     REGISTER MODALS (shared structure — one per session)
+     ============================================================ -->
+
+<!-- Generic register modal template for sessions 1–12 -->
+<div id="modal-s1" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-s1-title" aria-hidden="true">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="modal-s1-title">Register — HTML Fundamentals Workshop</h3>
+      <button class="modal-close" aria-label="Close modal"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:0.9rem;color:var(--gray-mid);margin-bottom:20px">
+        <i class="fa-regular fa-calendar" aria-hidden="true" style="color:var(--sage);margin-right:6px"></i>
+        March 15, 2026 &nbsp;|&nbsp;
+        <i class="fa-regular fa-clock" aria-hidden="true" style="color:var(--sage);margin-right:6px"></i>
+        3:30 PM – 5:00 PM &nbsp;|&nbsp;
+        <i class="fa-solid fa-person-chalkboard" aria-hidden="true" style="color:var(--sage);margin-right:6px"></i>
+        Maya Chen
+      </p>
+      <form class="register-form" novalidate>
+        <div class="form-group">
+          <label for="s1-name">Your Name</label>
+          <input type="text" id="s1-name" placeholder="Full name" required />
+        </div>
+        <div class="form-group">
+          <label for="s1-email">Email Address</label>
+          <input type="email" id="s1-email" placeholder="you@school.edu" required />
+        </div>
+        <div class="form-group">
+          <label for="s1-grade">Grade</label>
+          <select id="s1-grade">
+            <option value="">Select grade</option>
+            <option>9th Grade</option><option>10th Grade</option><option>11th Grade</option><option>12th Grade</option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:100%">Confirm Registration</button>
+        <div class="form-success"><i class="fa-solid fa-check-circle" aria-hidden="true"></i> You're registered! See you on March 15.</div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Sessions 2–12: simplified modals sharing same form structure -->
+<script>
+// Generate modals 2–12 dynamically
+const sessionData = [
+  { id:'s2', title:'CSS Layouts & Flexbox',         date:'March 17, 2026', time:'4:00 PM – 5:30 PM',  host:'Jordan Park',  confirm:'March 17' },
+  { id:'s3', title:'JavaScript Basics Study Group', date:'March 20, 2026', time:'5:00 PM – 6:30 PM',  host:'Open to all',  confirm:'March 20' },
+  { id:'s4', title:'Responsive Design Workshop',    date:'March 22, 2026', time:'2:00 PM – 3:30 PM',  host:'Priya Nair',   confirm:'March 22' },
+  { id:'s5', title:'DOM Manipulation Tutoring',     date:'March 25, 2026', time:'4:30 PM – 6:00 PM',  host:'Alex Rivera',  confirm:'March 25' },
+  { id:'s6', title:'CSS Grid Mastery Study Group',  date:'March 27, 2026', time:'3:00 PM – 4:30 PM',  host:'Open to all',  confirm:'March 27' },
+  { id:'s7', title:'JavaScript Events Workshop',    date:'April 1, 2026',  time:'4:00 PM – 5:30 PM',  host:'Maya Chen',    confirm:'April 1'  },
+  { id:'s8', title:'HTML Forms & Accessibility',    date:'April 3, 2026',  time:'3:30 PM – 5:00 PM',  host:'Jordan Park',  confirm:'April 3'  },
+  { id:'s9', title:'Build Your Portfolio Study Group', date:'April 5, 2026',time:'2:30 PM – 4:00 PM',host:'Open to all',  confirm:'April 5'  },
+  { id:'s10',title:'CSS Animations Workshop',       date:'April 8, 2026',  time:'4:00 PM – 5:30 PM',  host:'Priya Nair',   confirm:'April 8'  },
+  { id:'s11',title:'JavaScript Promises & Fetch',   date:'April 10, 2026', time:'5:00 PM – 6:30 PM',  host:'Alex Rivera',  confirm:'April 10' },
+  { id:'s12',title:'Final Project Showcase',        date:'April 15, 2026', time:'3:00 PM – 5:00 PM',  host:'All welcome',  confirm:'April 15' },
+];
+
+document.addEventListener('DOMContentLoaded', () => {
+  sessionData.forEach(s => {
+    const div = document.createElement('div');
+    div.id = `modal-${s.id}`;
+    div.className = 'modal-overlay';
+    div.setAttribute('role','dialog');
+    div.setAttribute('aria-modal','true');
+    div.setAttribute('aria-labelledby',`modal-${s.id}-title`);
+    div.setAttribute('aria-hidden','true');
+    div.innerHTML = `
+      <div class="modal">
+        <div class="modal-header">
+          <h3 id="modal-${s.id}-title">Register — ${s.title}</h3>
+          <button class="modal-close" aria-label="Close modal"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
+        </div>
+        <div class="modal-body">
+          <p style="font-size:0.9rem;color:var(--gray-mid);margin-bottom:20px">
+            <i class="fa-regular fa-calendar" aria-hidden="true" style="color:var(--sage);margin-right:6px"></i>${s.date} &nbsp;|&nbsp;
+            <i class="fa-regular fa-clock" aria-hidden="true" style="color:var(--sage);margin-right:6px"></i>${s.time} &nbsp;|&nbsp;
+            <i class="fa-solid fa-person-chalkboard" aria-hidden="true" style="color:var(--sage);margin-right:6px"></i>${s.host}
+          </p>
+          <form class="register-form" novalidate>
+            <div class="form-group"><label>Your Name</label><input type="text" placeholder="Full name" required /></div>
+            <div class="form-group"><label>Email Address</label><input type="email" placeholder="you@school.edu" required /></div>
+            <div class="form-group"><label>Grade</label>
+              <select><option value="">Select grade</option><option>9th Grade</option><option>10th Grade</option><option>11th Grade</option><option>12th Grade</option></select>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width:100%">Confirm Registration</button>
+            <div class="form-success"><i class="fa-solid fa-check-circle" aria-hidden="true"></i> You're registered! See you on ${s.confirm}.</div>
+          </form>
+        </div>
+      </div>`;
+    document.body.appendChild(div);
+  });
+
+  // Init register forms
+  document.querySelectorAll('.register-form').forEach(form => {
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      const msg = form.querySelector('.form-success');
+      if (msg) {
+        msg.style.display = 'block';
+        form.querySelectorAll('input,select,button[type="submit"]').forEach(el => el.disabled = true);
+      }
+    });
+  });
+
+  // Init calendar
+  const calSessions = {
+    '2026-03-15': [{ title:'HTML Fundamentals Workshop', time:'3:30 PM',  color:'var(--sage)'        }],
+    '2026-03-17': [{ title:'CSS Layouts & Flexbox',       time:'4:00 PM',  color:'var(--lavender)'    }],
+    '2026-03-20': [{ title:'JavaScript Basics Study Group',time:'5:00 PM', color:'var(--dusty-rose)'  }],
+    '2026-03-22': [{ title:'Responsive Design Workshop',  time:'2:00 PM',  color:'var(--peach)'       }],
+    '2026-03-25': [{ title:'DOM Manipulation Tutoring',   time:'4:30 PM',  color:'var(--sage)'        }],
+    '2026-03-27': [{ title:'CSS Grid Mastery',            time:'3:00 PM',  color:'var(--lavender)'    }],
+    '2026-04-01': [{ title:'JavaScript Events Workshop',  time:'4:00 PM',  color:'var(--dusty-rose)'  }],
+    '2026-04-03': [{ title:'HTML Forms & Accessibility',  time:'3:30 PM',  color:'var(--peach)'       }],
+    '2026-04-05': [{ title:'Build Your Portfolio',        time:'2:30 PM',  color:'var(--sage)'        }],
+    '2026-04-08': [{ title:'CSS Animations Workshop',     time:'4:00 PM',  color:'var(--lavender)'    }],
+    '2026-04-10': [{ title:'JavaScript Promises & Fetch', time:'5:00 PM',  color:'var(--dusty-rose)'  }],
+    '2026-04-15': [{ title:'Final Project Showcase',      time:'3:00 PM',  color:'var(--peach)'       }],
+  };
+
+  initCalendar('calendar-widget-wrap', calSessions);
+});
+</script>
+
+<!-- Calendar container wrapper needed by initCalendar -->
+<script>
+// Patch: re-bind calendar widget since HTML structure already present
+window.addEventListener('load', () => {
+  const calSessions = {
+    '2026-03-15': [{ title:'HTML Fundamentals Workshop', time:'3:30 PM', color:'var(--sage)' }],
+    '2026-03-17': [{ title:'CSS Layouts & Flexbox', time:'4:00 PM', color:'var(--lavender)' }],
+    '2026-03-20': [{ title:'JavaScript Basics Study Group', time:'5:00 PM', color:'var(--dusty-rose)' }],
+    '2026-03-22': [{ title:'Responsive Design Workshop', time:'2:00 PM', color:'var(--peach)' }],
+    '2026-03-25': [{ title:'DOM Manipulation Tutoring', time:'4:30 PM', color:'var(--sage)' }],
+    '2026-03-27': [{ title:'CSS Grid Mastery', time:'3:00 PM', color:'var(--lavender)' }],
+    '2026-04-01': [{ title:'JavaScript Events Workshop', time:'4:00 PM', color:'var(--dusty-rose)' }],
+    '2026-04-03': [{ title:'HTML Forms & Accessibility', time:'3:30 PM', color:'var(--peach)' }],
+    '2026-04-05': [{ title:'Build Your Portfolio', time:'2:30 PM', color:'var(--sage)' }],
+    '2026-04-08': [{ title:'CSS Animations Workshop', time:'4:00 PM', color:'var(--lavender)' }],
+    '2026-04-10': [{ title:'JavaScript Promises & Fetch', time:'5:00 PM', color:'var(--dusty-rose)' }],
+    '2026-04-15': [{ title:'Final Project Showcase', time:'3:00 PM', color:'var(--peach)' }],
+  };
+
+  // Use the inline calendar widget
+  const container = document.querySelector('.calendar-widget');
+  if (!container) return;
+
+  let current = new Date(2026, 2, 1); // March 2026
+  const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const today  = new Date();
+
+  function render() {
+    const year  = current.getFullYear();
+    const month = current.getMonth();
+    const label = container.querySelector('.calendar-month-label');
+    if (label) label.textContent = `${MONTHS[month]} ${year}`;
+
+    const firstDay = new Date(year, month, 1).getDay();
+    const lastDate = new Date(year, month + 1, 0).getDate();
+    const prevLast = new Date(year, month, 0).getDate();
+    const grid  = container.querySelector('.calendar-grid');
+    if (!grid) return;
+
+    let html = '';
+    for (let i = firstDay - 1; i >= 0; i--) html += `<div class="cal-day other-month">${prevLast - i}</div>`;
+    for (let d = 1; d <= lastDate; d++) {
+      const ds = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+      const hasSess = !!calSessions[ds];
+      const isToday = d === today.getDate() && month === today.getMonth() && year === today.getFullYear();
+      html += `<div class="cal-day${isToday?' today':''}${hasSess?' has-session':''}" data-date="${ds}">${d}</div>`;
+    }
+    const remaining = (7 - ((firstDay + lastDate) % 7)) % 7;
+    for (let i = 1; i <= remaining; i++) html += `<div class="cal-day other-month">${i}</div>`;
+    grid.innerHTML = html;
+
+    grid.querySelectorAll('.cal-day:not(.other-month)').forEach(day => {
+      day.addEventListener('click', () => {
+        grid.querySelectorAll('.cal-day').forEach(d => d.classList.remove('selected'));
+        day.classList.add('selected');
+        showSessions(day.dataset.date);
+      });
+    });
+  }
+
+  function showSessions(ds) {
+    const panel = container.querySelector('.calendar-sessions-panel');
+    if (!panel) return;
+    const sessions = calSessions[ds];
+    if (!sessions || !sessions.length) {
+      panel.innerHTML = '<p style="font-size:0.85rem;color:var(--gray-mid);padding:8px 0">No sessions on this day.</p>';
+    } else {
+      panel.innerHTML = sessions.map(s => `
+        <div class="cal-session-item">
+          <div class="cal-session-dot" style="background:${s.color}"></div>
+          <div class="cal-session-info"><div class="title">${s.title}</div><div class="time">${s.time}</div></div>
+        </div>`).join('');
+    }
+    panel.classList.add('open');
+  }
+
+  container.querySelector('.cal-prev')?.addEventListener('click', () => { current.setMonth(current.getMonth()-1); render(); });
+  container.querySelector('.cal-next')?.addEventListener('click', () => { current.setMonth(current.getMonth()+1); render(); });
+  render();
+});
+</script>
+
+
+<!-- FOOTER -->
+<svg class="footer-wave" viewBox="0 0 1440 60" preserveAspectRatio="none" aria-hidden="true">
+  <path d="M0,30 C360,60 1080,0 1440,30 L1440,60 L0,60 Z" fill="var(--sage-light)"/>
+</svg>
+<footer class="footer" role="contentinfo">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <a href="index.html" class="footer-logo">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="12" cy="12" r="9" stroke="var(--sage)" stroke-width="1.5"/>
+          <path d="M12 3C12 3 8 7 8 12C8 17 12 21 12 21" stroke="var(--sage)" stroke-width="1.5"/>
+          <path d="M12 3C12 3 16 7 16 12C16 17 12 21 12 21" stroke="var(--sage)" stroke-width="1.5"/>
+          <line x1="3" y1="12" x2="21" y2="12" stroke="var(--sage)" stroke-width="1.5"/>
+        </svg>Build-a-Web
+      </a>
+      <p>A student-made learning hub teaching HTML, CSS, and JavaScript to high school students everywhere.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Pages</h4>
+      <ul role="list">
+        <li><a href="index.html">Home</a></li><li><a href="schedule.html">Schedule</a></li>
+        <li><a href="dashboard.html">Dashboard</a></li><li><a href="resources.html">Resources</a></li>
+        <li><a href="about.html">About</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <div class="footer-contact-item"><i class="fa-solid fa-envelope" aria-hidden="true"></i> hello@buildaweb.edu</div>
+      <div class="footer-contact-item"><i class="fa-solid fa-location-dot" aria-hidden="true"></i> FBLA 2025–2026</div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p class="footer-tagline">Built with care by students, for students.</p>
+    <p class="footer-copy">&copy; 2026 Build-a-Web. FBLA Website Design.</p>
+  </div>
+</footer>
+
+<button class="back-to-top" aria-label="Back to top"><i class="fa-solid fa-arrow-up" aria-hidden="true"></i> Top</button>
+<script src="script.js"></script>
+</body>
+</html>

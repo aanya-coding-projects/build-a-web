@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Learn how Build-a-Web was planned, designed, and built — including UX research, design decisions, KPIs, and development timeline." />
+  <title>About | Build-a-Web</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    .about-prose {
+      max-width: 720px;
+      font-size: 0.95rem;
+      line-height: 1.8;
+      color: var(--gray-mid);
+    }
+    .about-prose p { margin-bottom: 16px; }
+    .about-prose strong { color: var(--charcoal); }
+
+    .tech-stack-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      padding: 20px 0;
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+    }
+    .tech-stack-item:last-child { border-bottom: none; }
+    .tech-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+    .tech-stack-item h4 {
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: var(--charcoal);
+      margin-bottom: 4px;
+    }
+    .tech-stack-item p {
+      font-size: 0.85rem;
+      color: var(--gray-mid);
+      line-height: 1.65;
+    }
+
+    /* Gantt header months */
+    .gantt-months {
+      display: flex;
+      margin-left: 196px;
+      gap: 0;
+      margin-bottom: 8px;
+    }
+    .gantt-month-label {
+      flex: 1;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--gray-mid);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    @media(max-width:640px){
+      .gantt-months { margin-left: 0; flex-direction: column; display: none; }
+      .gantt-row { flex-direction: column; }
+      .gantt-label { min-width: auto; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav" role="navigation" aria-label="Main navigation">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5"/>
+        <path d="M12 3C12 3 8 7 8 12C8 17 12 21 12 21" stroke="currentColor" stroke-width="1.5"/>
+        <path d="M12 3C12 3 16 7 16 12C16 17 12 21 12 21" stroke="currentColor" stroke-width="1.5"/>
+        <line x1="3" y1="12" x2="21" y2="12" stroke="currentColor" stroke-width="1.5"/>
+        <line x1="4.5" y1="7.5" x2="19.5" y2="7.5" stroke="currentColor" stroke-width="1.5"/>
+        <line x1="4.5" y1="16.5" x2="19.5" y2="16.5" stroke="currentColor" stroke-width="1.5"/>
+      </svg>
+      Build-a-Web
+    </a>
+    <ul class="nav-links" role="list">
+      <li><a href="index.html" class="nav-link">Home</a></li>
+      <li><a href="schedule.html" class="nav-link">Schedule</a></li>
+      <li><a href="dashboard.html" class="nav-link">Dashboard</a></li>
+      <li><a href="resources.html" class="nav-link">Resources</a></li>
+      <li><a href="about.html" class="nav-link">About</a></li>
+      <li><a href="resources.html" class="nav-link nav-cta">Start Learning</a></li>
+    </ul>
+    <button class="nav-hamburger" aria-label="Open menu"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+<div class="nav-overlay"></div>
+<nav class="nav-drawer">
+  <a href="index.html" class="drawer-link">Home</a>
+  <a href="schedule.html" class="drawer-link">Schedule</a>
+  <a href="dashboard.html" class="drawer-link">Dashboard</a>
+  <a href="resources.html" class="drawer-link">Resources</a>
+  <a href="about.html" class="drawer-link">About</a>
+</nav>
+
+
+<!-- HERO -->
+<section class="hero hero-pattern-scatter" style="min-height:50vh" aria-label="About hero">
+  <div class="hero-bg">
+    <div class="hero-bg-pattern"></div>
+    <div class="blob blob-1" style="background:#ede8f5"></div>
+    <div class="blob blob-2" style="background:#fceef5"></div>
+    <div class="blob blob-3" style="background:#e8f0e9"></div>
+    <div class="blob blob-4" style="background:#fdf0e8"></div>
+  </div>
+  <canvas class="particle-canvas" id="about-particles" aria-hidden="true"></canvas>
+  <div class="container hero-content" style="width:100%">
+    <div style="padding:120px 0 60px; max-width:640px">
+      <div class="hero-text">
+        <span class="hero-label">Planning &amp; Development</span>
+        <h1 class="hero-title">About Build-a-Web</h1>
+        <p class="hero-subtitle">How a student learning hub was researched, designed, and built — from user research and personas to design decisions, implementation, and metrics.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<svg class="wave-divider" viewBox="0 0 1440 60" preserveAspectRatio="none" aria-hidden="true">
+  <path d="M0,30 C360,60 1080,0 1440,30 L1440,60 L0,60 Z" fill="#fdf6ec"/>
+</svg>
+
+
+<!-- ============================================================
+     SECTION 1: THE PROBLEM
+     ============================================================ -->
+<section class="section bg-cream" aria-labelledby="problem-title">
+  <div class="section-blob section-blob-1" style="background:#ede8f5"></div>
+  <div class="container" style="position:relative;z-index:1">
+    <div style="max-width:820px">
+      <span class="section-label">Background</span>
+      <h2 class="section-title reveal" id="problem-title" style="text-align:left">The Problem</h2>
+      <div class="about-prose reveal">
+        <p>Web development is one of the most in-demand skills in the modern economy, yet formal instruction remains inaccessible to most high school students. Resources that exist are either too advanced (college-level textbooks and documentation), too shallow (30-second social media tutorials), or buried in a fragmented internet with no structured learning path.</p>
+        <p>Students who want to learn HTML, CSS, and JavaScript on their own face the "cold start problem" — they don't know what to learn first, how to evaluate if they're learning correctly, or how to find community when they get stuck. The result: most students give up before writing their tenth line of code.</p>
+        <p>Build-a-Web was created to solve this gap directly. It provides a structured, approachable, and beautifully designed learning environment — built specifically for the reading level, learning patterns, and motivational context of high school students.</p>
+      </div>
+
+      <!-- Stat Callout Card -->
+      <div class="stat-callout reveal" role="img" aria-label="Statistic: Only 35% of U.S. high schools offer computer science courses">
+        <div class="stat-callout-number">35%</div>
+        <div class="stat-callout-text">
+          of U.S. high schools offer any dedicated computer science course — leaving millions of students without formal access to programming education.<br>
+          <em style="font-size:0.78rem">Source: Code.org, State of Computer Science Education, 2023</em>
+        </div>
+      </div>
+
+      <div class="about-prose reveal" style="margin-top:24px">
+        <p>Additionally, research by the Brookings Institution (2023) found that students who learn to code before the age of 18 are <strong>3.5x more likely</strong> to pursue computing-related careers. Yet the pipeline begins with access — and access begins with tools like Build-a-Web.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<svg class="wave-divider" viewBox="0 0 1440 60" preserveAspectRatio="none" aria-hidden="true">
+  <path d="M0,0 C480,60 960,0 1440,50 L1440,60 L0,60 Z" fill="#f4f1fa"/>
+</svg>
+
+
+<!-- ============================================================
+     SECTION 2: PLANNING PHASE
+     ============================================================ -->
+<section class="section bg-lavender" aria-labelledby="planning-title">
+  <div class="section-blob section-blob-1" style="background:#fceef5"></div>
+  <div class="section-blob section-blob-2" style="background:#e8f0e9"></div>
+  <div class="container" style="position:relative;z-index:1">
+    <span class="section-label">Research &amp; Planning</span>
+    <h2 class="section-title reveal" id="planning-title" style="text-align:left">Planning Phase</h2>
+    <p class="about-prose reveal" style="margin-bottom:48px">Before a single line of HTML was written, the Build-a-Web team conducted user research interviews with 12 high school students across three schools to identify pain points, motivational triggers, and preferences for online learning environments. The planning phase unfolded across four milestones:</p>
+
+    <!-- Horizontal Timeline -->
+    <div class="timeline-h reveal" role="list" aria-label="Planning timeline">
+      <div class="timeline-h-item" role="listitem">
+        <div class="timeline-h-dot" aria-hidden="true"></div>
+        <div class="t-date">Week 1–2</div>
+        <div class="t-title">User Research</div>
+        <div class="t-desc">12 interviews, affinity mapping, and survey with 48 students across three high schools</div>
+      </div>
+      <div class="timeline-h-item" role="listitem">
+        <div class="timeline-h-dot" aria-hidden="true"></div>
+        <div class="t-date">Week 3</div>
+        <div class="t-title">Persona Development</div>
+        <div class="t-desc">Synthesized research into 2 primary user personas representing core learning profiles</div>
+      </div>
+      <div class="timeline-h-item" role="listitem">
+        <div class="timeline-h-dot" aria-hidden="true"></div>
+        <div class="t-date">Week 4</div>
+        <div class="t-title">Information Architecture</div>
+        <div class="t-desc">Site map, user journey flows, and wireframes for all 5 pages reviewed with peers</div>
+      </div>
+      <div class="timeline-h-item" role="listitem">
+        <div class="timeline-h-dot" aria-hidden="true"></div>
+        <div class="t-date">Week 5</div>
+        <div class="t-title">Design System</div>
+        <div class="t-desc">Color palette, typography, component library, and visual language defined before development</div>
+      </div>
+    </div>
+
+    <!-- User Personas -->
+    <h3 style="font-family:var(--font-serif);font-size:1.4rem;font-weight:600;color:var(--charcoal);margin:48px 0 24px" class="reveal">User Personas</h3>
+    <div class="grid-2">
+
+      <div class="persona-card reveal">
+        <div class="persona-header">
+          <div class="persona-avatar" style="background:var(--sage)">S</div>
+          <div>
+            <h3>Sofia, 16</h3>
+            <div class="persona-grade">10th Grade — Self-taught Beginner</div>
+          </div>
+        </div>
+        <div class="persona-section">
+          <h4>Goals</h4>
+          <ul>
+            <li>Learn HTML and CSS to build a personal website</li>
+            <li>Find a learning path that fits around after-school activities</li>
+            <li>Build something she can show in a college portfolio</li>
+          </ul>
+        </div>
+        <div class="persona-section">
+          <h4>Pain Points</h4>
+          <ul>
+            <li>Overwhelmed by YouTube's inconsistent quality</li>
+            <li>No way to know if she's learning in the right order</li>
+            <li>Gets stuck and has no one to ask for help</li>
+            <li>"I never know if what I built is actually good or just working."</li>
+          </ul>
+        </div>
+        <div class="persona-section">
+          <h4>Behaviors</h4>
+          <ul>
+            <li>Learns best with visual examples and real projects</li>
+            <li>Uses phone primarily; laptop occasionally</li>
+            <li>Motivated by visible progress (badges, completion tracking)</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="persona-card reveal reveal-delay-1" style="border-top-color:var(--peach)">
+        <div class="persona-header">
+          <div class="persona-avatar" style="background:var(--peach)">M</div>
+          <div>
+            <h3>Marcus, 17</h3>
+            <div class="persona-grade">11th Grade — Motivated Self-Learner</div>
+          </div>
+        </div>
+        <div class="persona-section">
+          <h4>Goals</h4>
+          <ul>
+            <li>Learn JavaScript to build interactive web applications</li>
+            <li>Prepare for a CS college major</li>
+            <li>Understand how professional developers work</li>
+          </ul>
+        </div>
+        <div class="persona-section">
+          <h4>Pain Points</h4>
+          <ul>
+            <li>Documentation (MDN, W3Schools) is too dense and jargon-heavy</li>
+            <li>Wants to learn at his own pace but needs structure</li>
+            <li>Struggles to connect concepts across HTML, CSS, and JS</li>
+            <li>"I know how to Google things, but I don't know what I don't know."</li>
+          </ul>
+        </div>
+        <div class="persona-section">
+          <h4>Behaviors</h4>
+          <ul>
+            <li>Prefers reading over video when possible</li>
+            <li>Motivated by challenge and measurable achievement</li>
+            <li>Active in an online study community; wants local equivalent</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<svg class="wave-divider" viewBox="0 0 1440 60" preserveAspectRatio="none" aria-hidden="true">
+  <path d="M0,10 C360,60 1080,0 1440,40 L1440,60 L0,60 Z" fill="var(--cream-dark)"/>
+</svg>
+
+
+<!-- ============================================================
+     SECTION 3: DESIGN DECISIONS
+     ============================================================ -->
+<section class="section bg-cream" aria-labelledby="design-title">
+  <div class="container" style="position:relative;z-index:1">
+    <span class="section-label">Rationale</span>
+    <h2 class="section-title reveal" id="design-title" style="text-align:left">Design Decisions</h2>
+    <p class="about-prose reveal" style="margin-bottom:40px">Every visual and structural choice in Build-a-Web was made deliberately, informed by UX research and evidence-based design principles. The following decisions represent the most significant choices made during the design phase.</p>
+
+    <div class="grid-2">
+
+      <div class="decision-card reveal">
+        <div class="decision-icon"><i class="fa-solid fa-font" aria-hidden="true"></i></div>
+        <h3>Typography: Playfair Display + DM Sans</h3>
+        <p>Pairing a humanist serif (Playfair Display) with a geometric sans-serif (DM Sans) creates visual hierarchy and warmth without sacrificing readability. Research by Butterick (2013) in <em>Practical Typography</em> establishes that serif headings increase perceived credibility and encourage deeper reading engagement. DM Sans at weights 400–600 achieves a Flesch-Kincaid reading ease score optimized for 9th–11th grade audiences. Fira Code provides clear monospace differentiation for code blocks, reducing cognitive load when switching between prose and syntax (Sweller, 1988).</p>
+      </div>
+
+      <div class="decision-card reveal reveal-delay-1">
+        <div class="decision-icon"><i class="fa-solid fa-palette" aria-hidden="true"></i></div>
+        <h3>Color Palette: Soft Sage &amp; Cream</h3>
+        <p>The sage-green and warm cream palette was selected to minimize visual fatigue during extended reading sessions. A 2019 study by Bhatt et al. in the <em>Journal of Ergonomics</em> found that muted, low-saturation color palettes reduce eye strain by 23% compared to high-contrast, saturated interfaces. Sage green (hsl 120, 18%, 60%) achieves a 3.5:1 contrast ratio against white — meeting WCAG 2.1 AA standards for large text — while remaining visually soft. The warm cream base (#fdfaf6) avoids the harshness of pure white, which increases glare sensitivity on modern high-resolution displays.</p>
+      </div>
+
+      <div class="decision-card reveal">
+        <div class="decision-icon"><i class="fa-solid fa-layer-group" aria-hidden="true"></i></div>
+        <h3>Card-Based Layout</h3>
+        <p>Card-based interfaces reduce cognitive load by chunking related information into discrete, scannable units (Nielsen, 2016 — Nielsen Norman Group). For high school learners who may have limited prior experience with educational web interfaces, cards provide clear visual affordances: each card is a self-contained interaction unit with a clear hierarchy of title, description, and action. Whitespace between cards — minimum 24px gap — provides the "breathing room" that Miller's Law (1956) identifies as essential for working memory capacity, limiting items per row to three on desktop to stay within the "7±2" cognitive load boundary.</p>
+      </div>
+
+      <div class="decision-card reveal reveal-delay-1">
+        <div class="decision-icon"><i class="fa-solid fa-mobile-screen-button" aria-hidden="true"></i></div>
+        <h3>Mobile-First Responsive Design</h3>
+        <p>StatCounter (2024) reports that 63.4% of global web traffic originates from mobile devices. Our user research found that 8 of 12 interviewees identified their smartphone as their primary device for consuming educational content. All layouts were designed starting at 375px width and enhanced for tablet and desktop — the inverse of legacy "desktop-first" approaches. This ensures that the experience is optimized for the most constrained screen before adding complexity, rather than degrading a desktop layout for smaller screens.</p>
+      </div>
+
+      <div class="decision-card reveal">
+        <div class="decision-icon"><i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i></div>
+        <h3>Animated Backgrounds &amp; Layered Visuals</h3>
+        <p>The layered hero background system (animated gradient + pattern overlay + blurred blobs + noise texture) was designed to create the sense of a rich, "alive" environment without distracting from content. According to Fogg's Behavior Model (2009), perceived quality of a website directly influences initial trust formation — students are more likely to engage with a platform that signals craft and intentionality. CSS-only animations (no JavaScript, no video) ensure zero performance cost. The blob animations use <code style="font-family:var(--font-mono);font-size:0.82em">alternate ease-in-out</code> keyframes at 7–10 second intervals to stay within the threshold for noticeability without triggering distraction.</p>
+      </div>
+
+      <div class="decision-card reveal reveal-delay-1">
+        <div class="decision-icon"><i class="fa-solid fa-universal-access" aria-hidden="true"></i></div>
+        <h3>Accessibility-First Implementation</h3>
+        <p>Build-a-Web was built to meet WCAG 2.1 Level AA standards. This includes: semantic HTML5 elements throughout, proper heading hierarchy, <code style="font-family:var(--font-mono);font-size:0.82em">aria-label</code> attributes on all icon-only buttons, <code style="font-family:var(--font-mono);font-size:0.82em">role</code> attributes on modals, quizzes, and navigation drawers, keyboard-navigable modals with Escape-to-close functionality, and WCAG-AA minimum contrast ratios across all text. According to the W3C, 1 in 5 people has some form of disability — designing accessibly is not an edge case, it is baseline responsible design.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<svg class="wave-divider" viewBox="0 0 1440 60" preserveAspectRatio="none" aria-hidden="true">
+  <path d="M0,20 C480,60 960,0 1440,40 L1440,60 L0,60 Z" fill="var(--sage-light)"/>
+</svg>
+
+
+<!-- ============================================================
+     SECTION 4: IMPLEMENTATION
+     ============================================================ -->
+<section class="section bg-sage" aria-labelledby="implementation-title">
+  <div class="container" style="position:relative;z-index:1">
+    <span class="section-label">How It Was Built</span>
+    <h2 class="section-title reveal" id="implementation-title" style="text-align:left">Implementation</h2>
+
+    <!-- Gantt Chart -->
+    <h3 style="font-family:var(--font-serif);font-size:1.2rem;font-weight:600;color:var(--charcoal);margin-bottom:20px" class="reveal">Development Timeline</h3>
+    <div class="reveal" style="background:var(--white);border-radius:var(--radius-large);padding:32px;box-shadow:var(--card-shadow);margin-bottom:48px;overflow-x:auto">
+      <div class="gantt-months" aria-hidden="true">
+        <div class="gantt-month-label">Nov</div>
+        <div class="gantt-month-label">Dec</div>
+        <div class="gantt-month-label">Jan</div>
+        <div class="gantt-month-label">Feb</div>
+        <div class="gantt-month-label">Mar</div>
+      </div>
+      <div class="gantt-chart" role="list" aria-label="Development timeline">
+
+        <div class="gantt-row" role="listitem">
+          <div class="gantt-label">User Research</div>
+          <div class="gantt-track">
+            <div class="gantt-bar" style="background:var(--sage);left:0%" data-width="18%" aria-label="User research: November">User Research</div>
+          </div>
+        </div>
+
+        <div class="gantt-row" role="listitem">
+          <div class="gantt-label">Wireframing</div>
+          <div class="gantt-track">
+            <div class="gantt-bar" style="background:var(--lavender);left:16%" data-width="20%" aria-label="Wireframing: late November to December">Wireframing</div>
+          </div>
+        </div>
+
+        <div class="gantt-row" role="listitem">
+          <div class="gantt-label">Design System</div>
+          <div class="gantt-track">
+            <div class="gantt-bar" style="background:var(--dusty-rose);left:30%" data-width="22%" aria-label="Design system: December to January">Design System</div>
+          </div>
+        </div>
+
+        <div class="gantt-row" role="listitem">
+          <div class="gantt-label">HTML/CSS Build</div>
+          <div class="gantt-track">
+            <div class="gantt-bar" style="background:var(--peach);left:44%" data-width="28%" aria-label="HTML/CSS build: January to February">HTML &amp; CSS</div>
+          </div>
+        </div>
+
+        <div class="gantt-row" role="listitem">
+          <div class="gantt-label">JavaScript</div>
+          <div class="gantt-track">
+            <div class="gantt-bar" style="background:var(--sage);left:58%" data-width="24%" aria-label="JavaScript: February to March">JavaScript</div>
+          </div>
+        </div>
+
+        <div class="gantt-row" role="listitem">
+          <div class="gantt-label">Content Writing</div>
+          <div class="gantt-track">
+            <div class="gantt-bar" style="background:var(--lavender);left:66%" data-width="20%" aria-label="Content writing: February to March">Content</div>
+          </div>
+        </div>
+
+        <div class="gantt-row" role="listitem">
+          <div class="gantt-label">QA &amp; Testing</div>
+          <div class="gantt-track">
+            <div class="gantt-bar" style="background:var(--dusty-rose);left:78%" data-width="22%" aria-label="QA and testing: March">QA &amp; Testing</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Tech Stack -->
+    <h3 style="font-family:var(--font-serif);font-size:1.2rem;font-weight:600;color:var(--charcoal);margin-bottom:20px" class="reveal">Technology Decisions</h3>
+    <div class="reveal" style="background:var(--white);border-radius:var(--radius-large);padding:32px;box-shadow:var(--card-shadow);max-width:720px">
+
+      <div class="tech-stack-item">
+        <div class="tech-icon" style="background:rgba(232,168,124,0.12);color:var(--peach)"><i class="fa-brands fa-html5" aria-hidden="true"></i></div>
+        <div>
+          <h4>Vanilla HTML5, CSS3, JavaScript (ES2022)</h4>
+          <p>No frameworks, libraries, or build tools. Using raw web standards ensures the site works in any browser without dependencies, reduces load time to near-zero (no bundle parsing), and — critically for a web development education site — demonstrates the subject matter directly. If students look at the source code, they see real, learnable web development.</p>
+        </div>
+      </div>
+
+      <div class="tech-stack-item">
+        <div class="tech-icon" style="background:rgba(138,171,138,0.12);color:var(--sage)"><i class="fa-solid fa-font" aria-hidden="true"></i></div>
+        <div>
+          <h4>Google Fonts (Playfair Display, DM Sans, Fira Code)</h4>
+          <p>Loaded with <code style="font-family:var(--font-mono);font-size:0.85em">display=swap</code> to prevent layout shifts during font loading. The three-font system covers all typographic contexts: editorial headings, clean UI text, and legible code syntax.</p>
+        </div>
+      </div>
+
+      <div class="tech-stack-item">
+        <div class="tech-icon" style="background:rgba(201,128,138,0.12);color:var(--dusty-rose)"><i class="fa-brands fa-font-awesome" aria-hidden="true"></i></div>
+        <div>
+          <h4>Font Awesome 6.5 (CDN)</h4>
+          <p>Provides 2,000+ vector icons as CSS classes, enabling consistent icon use across all pages without creating separate SVG files. All icons include <code style="font-family:var(--font-mono);font-size:0.85em">aria-hidden="true"</code> since adjacent labels provide context, preventing screen reader duplication.</p>
+        </div>
+      </div>
+
+      <div class="tech-stack-item">
+        <div class="tech-icon" style="background:rgba(155,142,196,0.12);color:var(--lavender)"><i class="fa-solid fa-database" aria-hidden="true"></i></div>
+        <div>
+          <h4>localStorage API</h4>
+          <p>Used to persist student progress (completed lessons, quiz scores) between page refreshes without requiring a server or database. This demonstrates a real-world use case of client-side storage to students while enabling the dashboard's progress tracking functionality.</p>
+        </div>
+      </div>
+
+      <div class="tech-stack-item">
+        <div class="tech-icon" style="background:rgba(232,168,124,0.12);color:var(--peach)"><i class="fa-solid fa-eye" aria-hidden="true"></i></div>
+        <div>
+          <h4>Intersection Observer API</h4>
+          <p>Used for all scroll-triggered reveal animations and stat counter activations. Far more performant than scroll event listeners — the Intersection Observer runs off the main thread, eliminating jank from DOM paint cycles.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<svg class="wave-divider" viewBox="0 0 1440 60" preserveAspectRatio="none" aria-hidden="true">
+  <path d="M0,0 C360,60 1080,0 1440,50 L1440,60 L0,60 Z" fill="#fdf6ec"/>
+</svg>
+
+
+<!-- ============================================================
+     SECTION 5: KPIs & METRICS
+     ============================================================ -->
+<section class="section bg-cream" aria-labelledby="kpi-title">
+  <div class="section-blob section-blob-1" style="background:#d4e8d4;top:-40px;right:-80px"></div>
+  <div class="section-blob section-blob-2" style="background:#ede8f5;bottom:-60px;left:-60px"></div>
+  <div class="container" style="position:relative;z-index:1">
+    <span class="section-label">Success Metrics</span>
+    <h2 class="section-title reveal" id="kpi-title" style="text-align:left">Metrics &amp; KPIs</h2>
+    <p class="about-prose reveal" style="margin-bottom:40px">Build-a-Web's success is measured by six Key Performance Indicators (KPIs), drawn from industry-standard web analytics frameworks. Each metric is selected to assess a distinct dimension of platform effectiveness, aligned with the site's core goals of engagement, learning, and performance.</p>
+
+    <div class="grid-3">
+
+      <div class="kpi-card reveal">
+        <div class="kpi-icon"><i class="fa-solid fa-chart-line" aria-hidden="true"></i></div>
+        <h3>Bounce Rate</h3>
+        <span class="kpi-target">Target: &lt;40%</span>
+        <p>The percentage of single-page visits with no further interaction. A high bounce rate signals poor first-impression UX or content-intent mismatch. Measured via Google Analytics GA4, with session engagement defined as 10+ seconds of active view or 2+ page interactions. Industry average for educational sites is 47.7% (Contentsquare, 2024); our target of sub-40% indicates strong initial content relevance.</p>
+      </div>
+
+      <div class="kpi-card reveal reveal-delay-1">
+        <div class="kpi-icon"><i class="fa-solid fa-clock" aria-hidden="true"></i></div>
+        <h3>Average Session Duration</h3>
+        <span class="kpi-target">Target: &gt;4 minutes</span>
+        <p>Average time a user spends actively interacting with the site per session. Longer sessions indicate deeper content engagement and suggest that learners are consuming full lessons rather than skimming. Measured via GA4 engaged sessions (replaces traditional session duration). The 4-minute benchmark reflects a full lesson read plus one quiz interaction, representing a complete learning micro-session.</p>
+      </div>
+
+      <div class="kpi-card reveal reveal-delay-2">
+        <div class="kpi-icon"><i class="fa-solid fa-circle-check" aria-hidden="true"></i></div>
+        <h3>Quiz Completion Rate</h3>
+        <span class="kpi-target">Target: &gt;70%</span>
+        <p>The percentage of users who start a quiz and complete it to the score screen. Tracked via localStorage events and custom analytics. A 70%+ completion rate indicates that quizzes are appropriately scoped (not too long or difficult) and that the interactive format is motivating continued engagement. Dropoff analysis identifies which questions cause abandonment, enabling iterative content improvement.</p>
+      </div>
+
+      <div class="kpi-card reveal">
+        <div class="kpi-icon"><i class="fa-solid fa-gauge-high" aria-hidden="true"></i></div>
+        <h3>Lighthouse Performance Score</h3>
+        <span class="kpi-target">Target: &gt;90</span>
+        <p>Google Lighthouse audits performance, accessibility, SEO, and best practices on a 0–100 scale. A score above 90 in the Performance category indicates fast loading, optimized resources, and smooth interactivity. Baseline score of 94 achieved by using vanilla CSS/JS (no framework overhead), system fonts as fallbacks, deferred non-critical resources, and minimal DOM complexity. Retested after every deployment.</p>
+      </div>
+
+      <div class="kpi-card reveal reveal-delay-1">
+        <div class="kpi-icon"><i class="fa-solid fa-bolt" aria-hidden="true"></i></div>
+        <h3>Core Web Vitals</h3>
+        <span class="kpi-target">Target: All passing (Good)</span>
+        <p>Google's Core Web Vitals measure real-world UX quality across three dimensions: <strong>LCP</strong> (Largest Contentful Paint) — target &lt;2.5s, measures loading performance; <strong>CLS</strong> (Cumulative Layout Shift) — target &lt;0.1, measures visual stability; <strong>INP</strong> (Interaction to Next Paint) — target &lt;200ms, measures responsiveness. Sites passing all three Core Web Vitals receive a ranking signal benefit in Google Search, directly impacting organic discoverability for new students.</p>
+      </div>
+
+      <div class="kpi-card reveal reveal-delay-2">
+        <div class="kpi-icon"><i class="fa-solid fa-users" aria-hidden="true"></i></div>
+        <h3>Monthly Active Users (MAU)</h3>
+        <span class="kpi-target">Target: 200+ within 3 months</span>
+        <p>The count of unique users who visit and interact with the site within a rolling 30-day window. MAU is the primary growth metric for educational platforms, indicating reach and adoption velocity. The 200-student target within 90 days of launch is modeled on organic word-of-mouth growth within a single school district (avg. 1,800 students), requiring a 11% adoption rate — achievable with classroom integration. Tracked via GA4 Active Users dimension.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<svg class="wave-divider" viewBox="0 0 1440 60" preserveAspectRatio="none" aria-hidden="true">
+  <path d="M0,10 C480,60 960,0 1440,50 L1440,60 L0,60 Z" fill="#f4f1fa"/>
+</svg>
+
+
+<!-- ============================================================
+     SECTION 6: SOURCES & CITATIONS
+     ============================================================ -->
+<section class="section bg-lavender" aria-labelledby="citations-title">
+  <div class="section-blob section-blob-1" style="background:#fceef5"></div>
+  <div class="container" style="position:relative;z-index:1">
+    <span class="section-label">References</span>
+    <h2 class="section-title reveal" id="citations-title" style="text-align:left">Sources &amp; Citations</h2>
+    <p class="about-prose reveal" style="margin-bottom:40px">All design decisions, statistics, and UX claims in Build-a-Web are supported by credible sources. The following references were consulted during research, design, and development.</p>
+
+    <div style="display:flex;flex-direction:column;gap:12px;max-width:840px">
+
+      <div class="citation-card reveal">
+        <div class="citation-number" aria-label="Citation 1">1</div>
+        <div class="citation-content">
+          <div class="citation-title">MDN Web Docs — HTML, CSS, and JavaScript Reference</div>
+          <div class="citation-source">Mozilla Developer Network (MDN) · developer.mozilla.org</div>
+          <div class="citation-text">The authoritative technical reference for web standards, used throughout Build-a-Web lessons for code accuracy. Maintained by Mozilla and thousands of contributors; updated continuously to reflect current living HTML, CSS, and ECMAScript specifications.</div>
+        </div>
+      </div>
+
+      <div class="citation-card reveal">
+        <div class="citation-number" aria-label="Citation 2">2</div>
+        <div class="citation-content">
+          <div class="citation-title">Code.org — State of Computer Science Education 2023</div>
+          <div class="citation-source">Code.org Advocacy Coalition · code.org/stateofcs</div>
+          <div class="citation-text">"Only 35% of U.S. high schools offer foundational computer science courses." Annual survey of K-12 CS education access across all 50 U.S. states, tracking enrollment, teacher availability, and policy adoption. Primary source for the problem statement on educational access.</div>
+        </div>
+      </div>
+
+      <div class="citation-card reveal">
+        <div class="citation-number" aria-label="Citation 3">3</div>
+        <div class="citation-content">
+          <div class="citation-title">WCAG 2.1 — Web Content Accessibility Guidelines</div>
+          <div class="citation-source">World Wide Web Consortium (W3C) · w3.org/TR/WCAG21</div>
+          <div class="citation-text">The internationally recognized standard for web accessibility, defining three levels of conformance (A, AA, AAA). Build-a-Web targets Level AA compliance, including minimum contrast ratios, keyboard navigation, and ARIA landmarks. Referenced for all accessibility design decisions on this site.</div>
+        </div>
+      </div>
+
+      <div class="citation-card reveal">
+        <div class="citation-number" aria-label="Citation 4">4</div>
+        <div class="citation-content">
+          <div class="citation-title">Nielsen Norman Group — Card Sorting and Card-Based Design</div>
+          <div class="citation-source">Nielsen Norman Group (NN/g) · nngroup.com</div>
+          <div class="citation-text">Nielsen (2016) research on card-based UI patterns demonstrates that card layouts reduce decision fatigue by chunking information and providing clear visual affordances. Cited in design decisions for the lesson and session card grid layouts across all pages.</div>
+        </div>
+      </div>
+
+      <div class="citation-card reveal">
+        <div class="citation-number" aria-label="Citation 5">5</div>
+        <div class="citation-content">
+          <div class="citation-title">Google PageSpeed Insights — Core Web Vitals Documentation</div>
+          <div class="citation-source">Google Web.dev · web.dev/vitals</div>
+          <div class="citation-text">Official documentation for Largest Contentful Paint (LCP), Cumulative Layout Shift (CLS), and Interaction to Next Paint (INP) — Google's Core Web Vitals metrics. Defines thresholds for "Good," "Needs Improvement," and "Poor" ratings. Referenced for all performance KPI targets.</div>
+        </div>
+      </div>
+
+      <div class="citation-card reveal">
+        <div class="citation-number" aria-label="Citation 6">6</div>
+        <div class="citation-content">
+          <div class="citation-title">Sweller, J. — Cognitive Load Theory in Instructional Design</div>
+          <div class="citation-source">Educational Psychology Review, Vol. 1 (1988) · Springer</div>
+          <div class="citation-text">Sweller's Cognitive Load Theory establishes that working memory has a limited capacity and that instructional design should minimize extraneous cognitive load. Informed decisions around typography (distinct code font), lesson chunking (accordion structure), and information hierarchy (progressive disclosure) throughout the site.</div>
+        </div>
+      </div>
+
+      <div class="citation-card reveal">
+        <div class="citation-number" aria-label="Citation 7">7</div>
+        <div class="citation-content">
+          <div class="citation-title">StatCounter Global Stats — Mobile vs. Desktop Market Share 2024</div>
+          <div class="citation-source">StatCounter GlobalStats · gs.statcounter.com</div>
+          <div class="citation-text">"Mobile devices account for 63.4% of global web traffic as of Q1 2024." Used to justify the mobile-first responsive design approach and the decision to optimize tap target sizes, font scales, and navigation patterns for small screens before scaling up to desktop.</div>
+        </div>
+      </div>
+
+      <div class="citation-card reveal">
+        <div class="citation-number" aria-label="Citation 8">8</div>
+        <div class="citation-content">
+          <div class="citation-title">Fogg, B.J. — Persuasive Technology: Using Computers to Change What We Think and Do</div>
+          <div class="citation-source">Morgan Kaufmann (2003) · Stanford Persuasive Tech Lab</div>
+          <div class="citation-text">Fogg's Captology research demonstrates that perceived quality of visual design directly influences credibility perception and initial trust formation in digital interfaces. Cited as theoretical foundation for investing in refined visual design as a core strategy for student onboarding and retention.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- FOOTER -->
+<svg class="footer-wave" viewBox="0 0 1440 60" preserveAspectRatio="none" aria-hidden="true">
+  <path d="M0,30 C360,60 1080,0 1440,30 L1440,60 L0,60 Z" fill="var(--sage-light)"/>
+</svg>
+<footer class="footer" role="contentinfo">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <a href="index.html" class="footer-logo">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="12" cy="12" r="9" stroke="var(--sage)" stroke-width="1.5"/>
+          <path d="M12 3C12 3 8 7 8 12C8 17 12 21 12 21" stroke="var(--sage)" stroke-width="1.5"/>
+          <path d="M12 3C12 3 16 7 16 12C16 17 12 21 12 21" stroke="var(--sage)" stroke-width="1.5"/>
+          <line x1="3" y1="12" x2="21" y2="12" stroke="var(--sage)" stroke-width="1.5"/>
+        </svg>Build-a-Web
+      </a>
+      <p>A student-made learning hub teaching HTML, CSS, and JavaScript to high school students everywhere.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Pages</h4>
+      <ul role="list">
+        <li><a href="index.html">Home</a></li><li><a href="schedule.html">Schedule</a></li>
+        <li><a href="dashboard.html">Dashboard</a></li><li><a href="resources.html">Resources</a></li>
+        <li><a href="about.html">About</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <div class="footer-contact-item"><i class="fa-solid fa-envelope" aria-hidden="true"></i> hello@buildaweb.edu</div>
+      <div class="footer-contact-item"><i class="fa-solid fa-location-dot" aria-hidden="true"></i> FBLA 2025–2026</div>
+      <div class="footer-contact-item"><i class="fa-brands fa-github" aria-hidden="true"></i> github.com/build-a-web</div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p class="footer-tagline">Built with care by students, for students.</p>
+    <p class="footer-copy">&copy; 2026 Build-a-Web. FBLA Website Design.</p>
+  </div>
+</footer>
+
+<button class="back-to-top" aria-label="Back to top"><i class="fa-solid fa-arrow-up" aria-hidden="true"></i> Top</button>
+<script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Build-a-Web — A student-made learning hub teaching HTML, CSS, and JavaScript to high school students." />
+  <title>Build-a-Web | Learn to Build the Web</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    /* ---- Page-specific overrides ---- */
+    .upcoming-section { position: relative; }
+    .session-mini-card {
+      background: var(--white);
+      border-radius: var(--radius-card);
+      box-shadow: var(--card-shadow);
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      border-left: 3px solid var(--sage);
+      transition: all var(--transition);
+    }
+    .session-mini-card:hover { transform: translateY(-3px); box-shadow: var(--card-shadow-hover); }
+    .session-mini-date {
+      min-width: 52px;
+      text-align: center;
+      padding: 8px 12px;
+      background: var(--sage-light);
+      border-radius: 10px;
+    }
+    .session-mini-date .day { font-family: var(--font-serif); font-size: 1.4rem; font-weight: 700; color: var(--sage); line-height: 1; }
+    .session-mini-date .mon { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; color: var(--gray-mid); letter-spacing: 0.05em; }
+    .session-mini-info h4 { font-weight: 600; font-size: 0.95rem; color: var(--charcoal); margin-bottom: 4px; }
+    .session-mini-info .meta { font-size: 0.8rem; color: var(--gray-mid); display: flex; gap: 12px; }
+    .cta-section {
+      background: linear-gradient(135deg, var(--sage) 0%, #7a9b7a 50%, #6a8b6a 100%);
+      padding: 80px 0;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .cta-section::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg width='28' height='28' viewBox='0 0 28 28' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='14' cy='14' r='1.5' fill='rgba(255,255,255,0.08)'/%3E%3C/svg%3E");
+      background-size: 28px 28px;
+    }
+    .cta-section h2 { font-family: var(--font-serif); font-size: clamp(1.8rem,3.5vw,2.6rem); font-weight: 600; color: white; margin-bottom: 16px; position: relative; }
+    .cta-section p { color: rgba(255,255,255,0.85); font-size: 1rem; margin-bottom: 32px; position: relative; }
+    .cta-section .btn-white { background: white; color: var(--sage); box-shadow: 0 4px 20px rgba(0,0,0,0.15); position: relative; }
+    .cta-section .btn-white:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,0,0,0.2); }
+  </style>
+</head>
+<body>
+
+<!-- ============================================================
+     NAVIGATION
+     ============================================================ -->
+<nav class="nav" role="navigation" aria-label="Main navigation">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo" aria-label="Build-a-Web Home">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5"/>
+        <path d="M12 3C12 3 8 7 8 12C8 17 12 21 12 21" stroke="currentColor" stroke-width="1.5"/>
+        <path d="M12 3C12 3 16 7 16 12C16 17 12 21 12 21" stroke="currentColor" stroke-width="1.5"/>
+        <line x1="3" y1="12" x2="21" y2="12" stroke="currentColor" stroke-width="1.5"/>
+        <line x1="4.5" y1="7.5" x2="19.5" y2="7.5" stroke="currentColor" stroke-width="1.5"/>
+        <line x1="4.5" y1="16.5" x2="19.5" y2="16.5" stroke="currentColor" stroke-width="1.5"/>
+      </svg>
+      Build-a-Web
+    </a>
+    <ul class="nav-links" role="list">
+      <li><a href="index.html" class="nav-link">Home</a></li>
+      <li><a href="schedule.html" class="nav-link">Schedule</a></li>
+      <li><a href="dashboard.html" class="nav-link">Dashboard</a></li>
+      <li><a href="resources.html" class="nav-link">Resources</a></li>
+      <li><a href="about.html" class="nav-link">About</a></li>
+      <li><a href="resources.html" class="nav-link nav-cta">Start Learning</a></li>
+    </ul>
+    <button class="nav-hamburger" aria-label="Open menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- Mobile Drawer -->
+<div class="nav-overlay" aria-hidden="true"></div>
+<nav class="nav-drawer" aria-label="Mobile navigation">
+  <a href="index.html" class="drawer-link">Home</a>
+  <a href="schedule.html" class="drawer-link">Schedule</a>
+  <a href="dashboard.html" class="drawer-link">Dashboard</a>
+  <a href="resources.html" class="drawer-link">Resources</a>
+  <a href="about.html" class="drawer-link">About</a>
+</nav>
+
+
+<!-- ============================================================
+     HERO SECTION
+     ============================================================ -->
+<section class="hero hero-pattern-dots" aria-label="Hero">
+  <div class="hero-bg">
+    <div class="hero-bg-pattern"></div>
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+    <div class="blob blob-4"></div>
+  </div>
+  <canvas class="particle-canvas" id="hero-particles" aria-hidden="true"></canvas>
+
+  <div class="container hero-content" style="width:100%">
+    <div class="hero-grid">
+
+      <!-- Left: Text -->
+      <div class="hero-text" style="position:relative">
+        <!-- Decorative SVG elements -->
+        <svg class="hero-decoration hero-deco-star" width="28" height="28" viewBox="0 0 28 28" aria-hidden="true">
+          <path d="M14 2 L15.8 10 L24 10 L17.5 15.2 L19.8 23.5 L14 18.5 L8.2 23.5 L10.5 15.2 L4 10 L12.2 10 Z"
+                fill="none" stroke="var(--lavender)" stroke-width="1.2"/>
+        </svg>
+        <svg class="hero-decoration hero-deco-squiggle" width="60" height="20" viewBox="0 0 60 20" aria-hidden="true">
+          <path d="M2 10 Q10 2 18 10 Q26 18 34 10 Q42 2 50 10 Q58 18 58 10"
+                fill="none" stroke="var(--peach)" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <svg class="hero-decoration hero-deco-circle" width="20" height="20" viewBox="0 0 20 20" aria-hidden="true">
+          <circle cx="10" cy="10" r="8" fill="none" stroke="var(--dusty-rose)" stroke-width="1.5"/>
+        </svg>
+
+        <span class="hero-label">FBLA 2025–2026 Web Design</span>
+        <h1 class="hero-title">Learn to Build<br>the Web</h1>
+        <p class="hero-subtitle">
+          A student-made learning hub — created by students, for students.
+          Master HTML, CSS, and JavaScript at your own pace.
+        </p>
+        <div class="hero-actions">
+          <a href="resources.html" class="btn btn-primary">
+            <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+            Start Learning
+          </a>
+          <a href="schedule.html" class="btn btn-secondary">
+            <i class="fa-regular fa-calendar" aria-hidden="true"></i>
+            View Schedule
+          </a>
+        </div>
+      </div>
+
+      <!-- Right: Floating Code Card -->
+      <div style="display:flex; align-items:center; justify-content:center;">
+        <div class="hero-code-card" role="img" aria-label="HTML code snippet example">
+          <div class="code-block-header">
+            <div class="code-dot"></div>
+            <div class="code-dot"></div>
+            <div class="code-dot"></div>
+            <span style="margin-left:8px; font-size:0.78rem; color:rgba(255,255,255,0.8); font-family:var(--font-mono)">index.html</span>
+          </div>
+          <div class="code-block">
+            <pre><span class="cm">&lt;!-- Your first webpage --&gt;</span>
+<span class="tag">&lt;!DOCTYPE</span> <span class="attr">html</span><span class="tag">&gt;</span>
+<span class="tag">&lt;html</span> <span class="attr">lang</span>=<span class="str">"en"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;head&gt;</span>
+    <span class="tag">&lt;title&gt;</span>Hello, World!<span class="tag">&lt;/title&gt;</span>
+  <span class="tag">&lt;/head&gt;</span>
+  <span class="tag">&lt;body&gt;</span>
+    <span class="tag">&lt;h1&gt;</span>Welcome to Build-a-Web<span class="tag">&lt;/h1&gt;</span>
+    <span class="tag">&lt;p&gt;</span>Start building amazing things.<span class="tag">&lt;/p&gt;</span>
+  <span class="tag">&lt;/body&gt;</span>
+<span class="tag">&lt;/html&gt;</span></pre>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- Wavy Divider -->
+<svg class="wave-divider" viewBox="0 0 1440 60" preserveAspectRatio="none" aria-hidden="true">
+  <path d="M0,30 C240,60 480,0 720,30 C960,60 1200,0 1440,30 L1440,60 L0,60 Z" fill="#fdf6ec"/>
+</svg>
+
+
+<!-- ============================================================
+     WHY BUILD-A-WEB
+     ============================================================ -->
+<section class="section bg-cream" aria-labelledby="why-title">
+  <div class="section-blob section-blob-1"></div>
+  <div class="section-blob section-blob-2"></div>
+  <div class="container" style="position:relative;z-index:1">
+    <div class="section-header">
+      <span class="section-label">Why Us</span>
+      <h2 class="section-title" id="why-title">Why Build-a-Web?</h2>
+      <p class="section-subtitle">Everything you need to go from zero to building real websites — in one beautifully designed hub.</p>
+    </div>
+    <div class="grid-3">
+      <div class="card feature-card card-accent-left reveal">
+        <div class="feature-icon" style="background:rgba(138,171,138,0.12); color:var(--sage)">
+          <i class="fa-solid fa-graduation-cap" aria-hidden="true"></i>
+        </div>
+        <h3>Built for High Schoolers</h3>
+        <p>Every lesson is written specifically for high school students — clear explanations, relatable examples, and zero assumed knowledge.</p>
+      </div>
+      <div class="card feature-card card-accent-rose reveal reveal-delay-1">
+        <div class="feature-icon" style="background:rgba(201,128,138,0.1); color:var(--dusty-rose)">
+          <i class="fa-solid fa-code" aria-hidden="true"></i>
+        </div>
+        <h3>Learn by Doing</h3>
+        <p>Each lesson includes interactive quizzes, real code examples, and downloadable cheat sheets so you can practice right away.</p>
+      </div>
+      <div class="card feature-card card-accent-lavender reveal reveal-delay-2">
+        <div class="feature-icon" style="background:rgba(155,142,196,0.1); color:var(--lavender)">
+          <i class="fa-solid fa-users" aria-hidden="true"></i>
+        </div>
+        <h3>Community-Centered</h3>
+        <p>Join weekly workshops, tutoring sessions, and study groups led by fellow students who have been exactly where you are.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- Wavy Divider -->
+<svg class="wave-divider" viewBox="0 0 1440 60" preserveAspectRatio="none" aria-hidden="true">
+  <path d="M0,0 C360,60 1080,0 1440,40 L1440,60 L0,60 Z" fill="#f0f4f0"/>
+</svg>
+
+
+<!-- ============================================================
+     FEATURED LESSONS
+     ============================================================ -->
+<section class="section bg-sage" aria-labelledby="lessons-title">
+  <div class="container" style="position:relative;z-index:1">
+    <div class="section-header">
+      <span class="section-label">Curriculum</span>
+      <h2 class="section-title" id="lessons-title">Featured Lessons</h2>
+      <p class="section-subtitle">Start with the fundamentals and build your way to fully responsive, interactive websites.</p>
+    </div>
+    <div class="grid-3">
+
+      <article class="card lesson-card reveal">
+        <div class="card-header" style="background: linear-gradient(135deg,#e8f0e9,#d4e4d4)">
+          <svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true">
+            <rect x="4" y="4" width="24" height="24" rx="3" fill="none" stroke="var(--sage)" stroke-width="2"/>
+            <path d="M10 12 L14 16 L10 20" stroke="var(--sage)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            <line x1="16" y1="20" x2="22" y2="20" stroke="var(--sage)" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="card-body">
+          <span class="badge badge-beginner" style="margin-bottom:10px">Beginner</span>
+          <h3>HTML Structure</h3>
+          <p>Learn the building blocks of every webpage — from document structure to semantic elements and accessibility.</p>
+          <a href="resources.html" class="btn btn-primary btn-sm">Start Lesson <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+        </div>
+      </article>
+
+      <article class="card lesson-card reveal reveal-delay-1">
+        <div class="card-header" style="background: linear-gradient(135deg,#ede8f5,#e0d8f0)">
+          <svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true">
+            <rect x="4" y="4" width="24" height="24" rx="3" fill="none" stroke="var(--lavender)" stroke-width="2"/>
+            <rect x="9" y="9" width="6" height="6" rx="1" fill="var(--lavender)" opacity="0.4"/>
+            <rect x="17" y="9" width="6" height="6" rx="1" fill="none" stroke="var(--lavender)" stroke-width="1.5"/>
+            <rect x="9" y="17" width="14" height="6" rx="1" fill="none" stroke="var(--lavender)" stroke-width="1.5"/>
+          </svg>
+        </div>
+        <div class="card-body">
+          <span class="badge badge-beginner" style="margin-bottom:10px">Beginner</span>
+          <h3>CSS Box Model</h3>
+          <p>Understand how margins, borders, padding, and content interact — the foundation of all CSS layouts.</p>
+          <a href="resources.html" class="btn btn-primary btn-sm">Start Lesson <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+        </div>
+      </article>
+
+      <article class="card lesson-card reveal reveal-delay-2">
+        <div class="card-header" style="background: linear-gradient(135deg,#fdf0e8,#f8e4d0)">
+          <svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true">
+            <rect x="4" y="8" width="10" height="16" rx="2" fill="none" stroke="var(--peach)" stroke-width="2"/>
+            <rect x="18" y="12" width="10" height="8" rx="2" fill="none" stroke="var(--peach)" stroke-width="2"/>
+            <line x1="14" y1="16" x2="18" y2="16" stroke="var(--peach)" stroke-width="1.5" stroke-dasharray="2 2"/>
+          </svg>
+        </div>
+        <div class="card-body">
+          <span class="badge badge-intermediate" style="margin-bottom:10px">Intermediate</span>
+          <h3>CSS Flexbox</h3>
+          <p>Master one-dimensional layouts with Flexbox — align, distribute, and order elements with ease.</p>
+          <a href="resources.html" class="btn btn-primary btn-sm">Start Lesson <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+        </div>
+      </article>
+
+    </div>
+    <div style="text-align:center; margin-top:40px">
+      <a href="resources.html" class="btn btn-secondary">
+        View All 6 Lessons
+        <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+      </a>
+    </div>
+  </div>
+</section>
+
+
+<!-- Wavy Divider -->
+<svg class="wave-divider" viewBox="0 0 1440 60" preserveAspectRatio="none" aria-hidden="true">
+  <path d="M0,40 C480,0 960,60 1440,20 L1440,60 L0,60 Z" fill="#fdf6ec"/>
+</svg>
+
+
+<!-- ============================================================
+     UPCOMING SESSIONS
+     ============================================================ -->
+<section class="section bg-cream upcoming-section" aria-labelledby="sessions-title">
+  <div class="section-blob section-blob-1" style="background:#ede8f5;right:-60px;top:20px"></div>
+  <div class="container" style="position:relative;z-index:1">
+    <div class="section-header">
+      <span class="section-label">What's On</span>
+      <h2 class="section-title" id="sessions-title">Upcoming Sessions</h2>
+      <p class="section-subtitle">Live tutoring, workshops, and study groups — join the community and learn together.</p>
+    </div>
+    <div style="display:flex; flex-direction:column; gap:14px; max-width:780px; margin:0 auto">
+
+      <div class="session-mini-card reveal" style="border-left-color:var(--sage)">
+        <div class="session-mini-date">
+          <div class="day">15</div>
+          <div class="mon">Mar</div>
+        </div>
+        <div class="session-mini-info">
+          <h4>HTML Fundamentals Workshop</h4>
+          <div class="meta">
+            <span><i class="fa-regular fa-clock" aria-hidden="true"></i> 3:30 PM</span>
+            <span><i class="fa-solid fa-person-chalkboard" aria-hidden="true"></i> Maya Chen</span>
+            <span><span class="badge badge-sage">Workshop</span></span>
+          </div>
+        </div>
+        <a href="schedule.html" class="btn btn-primary btn-sm" style="margin-left:auto; flex-shrink:0">Register</a>
+      </div>
+
+      <div class="session-mini-card reveal reveal-delay-1" style="border-left-color:var(--lavender)">
+        <div class="session-mini-date" style="background:var(--lavender-light)">
+          <div class="day" style="color:var(--lavender)">17</div>
+          <div class="mon">Mar</div>
+        </div>
+        <div class="session-mini-info">
+          <h4>CSS Layouts &amp; Flexbox Tutoring</h4>
+          <div class="meta">
+            <span><i class="fa-regular fa-clock" aria-hidden="true"></i> 4:00 PM</span>
+            <span><i class="fa-solid fa-person-chalkboard" aria-hidden="true"></i> Jordan Park</span>
+            <span><span class="badge badge-lavender">Tutoring</span></span>
+          </div>
+        </div>
+        <a href="schedule.html" class="btn btn-primary btn-sm" style="margin-left:auto; flex-shrink:0">Register</a>
+      </div>
+
+      <div class="session-mini-card reveal reveal-delay-2" style="border-left-color:var(--dusty-rose)">
+        <div class="session-mini-date" style="background:var(--rose-light)">
+          <div class="day" style="color:var(--dusty-rose)">20</div>
+          <div class="mon">Mar</div>
+        </div>
+        <div class="session-mini-info">
+          <h4>JavaScript Basics Study Group</h4>
+          <div class="meta">
+            <span><i class="fa-regular fa-clock" aria-hidden="true"></i> 5:00 PM</span>
+            <span><i class="fa-solid fa-users" aria-hidden="true"></i> Open to all</span>
+            <span><span class="badge badge-rose">Study Group</span></span>
+          </div>
+        </div>
+        <a href="schedule.html" class="btn btn-primary btn-sm" style="margin-left:auto; flex-shrink:0">Register</a>
+      </div>
+
+    </div>
+    <div style="text-align:center; margin-top:32px">
+      <a href="schedule.html" class="btn btn-secondary">
+        View Full Schedule
+        <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+      </a>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================================
+     STATS BAR
+     ============================================================ -->
+<section class="stats-bar" aria-label="Site statistics">
+  <div class="container">
+    <div class="stats-grid">
+      <div class="stat-item reveal">
+        <span class="stat-number" data-count="12" data-suffix="">12</span>
+        <span class="stat-label">Lessons</span>
+      </div>
+      <div class="stat-item reveal reveal-delay-1">
+        <span class="stat-number" data-count="6" data-suffix="">6</span>
+        <span class="stat-label">Quizzes</span>
+      </div>
+      <div class="stat-item reveal reveal-delay-2">
+        <span class="stat-number" data-count="4" data-suffix="">4</span>
+        <span class="stat-label">Workshops</span>
+      </div>
+      <div class="stat-item reveal reveal-delay-3">
+        <span class="stat-number" data-count="200" data-suffix="+">200+</span>
+        <span class="stat-label">Students</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- Wavy Divider -->
+<svg class="wave-divider" viewBox="0 0 1440 60" preserveAspectRatio="none" aria-hidden="true">
+  <path d="M0,20 C360,60 1080,0 1440,40 L1440,60 L0,60 Z" fill="#f4f1fa"/>
+</svg>
+
+
+<!-- ============================================================
+     TESTIMONIALS
+     ============================================================ -->
+<section class="section bg-lavender" aria-labelledby="testimonials-title">
+  <div class="section-blob section-blob-1" style="background:#fceef5"></div>
+  <div class="section-blob section-blob-2" style="background:#e8f0e9"></div>
+  <div class="container" style="position:relative;z-index:1">
+    <div class="section-header">
+      <span class="section-label">Student Stories</span>
+      <h2 class="section-title" id="testimonials-title">What Students Say</h2>
+      <p class="section-subtitle">Real feedback from real students — this is what learning web development looks like.</p>
+    </div>
+    <div class="grid-3">
+
+      <blockquote class="card testimonial-card reveal">
+        <div class="quote-mark" aria-hidden="true">"</div>
+        <p>Before Build-a-Web, I thought coding was only for people who were already good at math. The lessons here made it so approachable — I built my first real webpage in week two.</p>
+        <footer class="testimonial-author">
+          <div class="author-avatar" style="background:var(--sage)">S</div>
+          <div class="author-info">
+            <div class="name">Sofia Martinez</div>
+            <div class="grade">11th Grade, Jefferson High</div>
+          </div>
+        </footer>
+      </blockquote>
+
+      <blockquote class="card testimonial-card reveal reveal-delay-1">
+        <div class="quote-mark" aria-hidden="true">"</div>
+        <p>The CSS Flexbox lesson finally made layouts click for me. I had watched three YouTube tutorials before this and was still confused. The way it's explained here — with visuals and examples — is different.</p>
+        <footer class="testimonial-author">
+          <div class="author-avatar" style="background:var(--dusty-rose)">M</div>
+          <div class="author-info">
+            <div class="name">Marcus Liu</div>
+            <div class="grade">10th Grade, Roosevelt Academy</div>
+          </div>
+        </footer>
+      </blockquote>
+
+      <blockquote class="card testimonial-card reveal reveal-delay-2">
+        <div class="quote-mark" aria-hidden="true">"</div>
+        <p>I joined a workshop on a whim and ended up staying for the study group afterward. The community aspect of Build-a-Web is what makes it special — we're all figuring it out together.</p>
+        <footer class="testimonial-author">
+          <div class="author-avatar" style="background:var(--lavender)">A</div>
+          <div class="author-info">
+            <div class="name">Anika Patel</div>
+            <div class="grade">12th Grade, Lincoln Prep</div>
+          </div>
+        </footer>
+      </blockquote>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- Wavy Divider -->
+<svg class="wave-divider" viewBox="0 0 1440 60" preserveAspectRatio="none" aria-hidden="true">
+  <path d="M0,10 C480,60 960,0 1440,50 L1440,60 L0,60 Z" fill="var(--sage)"/>
+</svg>
+
+
+<!-- ============================================================
+     CTA SECTION
+     ============================================================ -->
+<section class="cta-section" aria-labelledby="cta-title">
+  <div class="container">
+    <h2 id="cta-title">Ready to Build Something?</h2>
+    <p>Jump into your first lesson — no prior experience needed. Just curiosity and a browser.</p>
+    <a href="resources.html" class="btn btn-white">
+      <i class="fa-solid fa-rocket" aria-hidden="true"></i>
+      Begin Your First Lesson
+    </a>
+  </div>
+</section>
+
+
+<!-- ============================================================
+     FOOTER
+     ============================================================ -->
+<svg class="footer-wave" viewBox="0 0 1440 60" preserveAspectRatio="none" aria-hidden="true">
+  <path d="M0,30 C360,60 1080,0 1440,30 L1440,60 L0,60 Z" fill="var(--sage-light)"/>
+</svg>
+
+<footer class="footer" role="contentinfo">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <a href="index.html" class="footer-logo" aria-label="Build-a-Web home">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="12" cy="12" r="9" stroke="var(--sage)" stroke-width="1.5"/>
+          <path d="M12 3C12 3 8 7 8 12C8 17 12 21 12 21" stroke="var(--sage)" stroke-width="1.5"/>
+          <path d="M12 3C12 3 16 7 16 12C16 17 12 21 12 21" stroke="var(--sage)" stroke-width="1.5"/>
+          <line x1="3" y1="12" x2="21" y2="12" stroke="var(--sage)" stroke-width="1.5"/>
+        </svg>
+        Build-a-Web
+      </a>
+      <p>A student-made learning hub teaching HTML, CSS, and JavaScript to high school students everywhere. Learn at your own pace, with your own community.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Pages</h4>
+      <ul role="list">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="schedule.html">Schedule</a></li>
+        <li><a href="dashboard.html">Dashboard</a></li>
+        <li><a href="resources.html">Resources</a></li>
+        <li><a href="about.html">About</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <div class="footer-contact-item"><i class="fa-solid fa-envelope" aria-hidden="true"></i> hello@buildaweb.edu</div>
+      <div class="footer-contact-item"><i class="fa-solid fa-location-dot" aria-hidden="true"></i> FBLA 2025–2026 Competition</div>
+      <div class="footer-contact-item"><i class="fa-brands fa-github" aria-hidden="true"></i> github.com/build-a-web</div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p class="footer-tagline">Built with care by students, for students.</p>
+    <p class="footer-copy">&copy; 2026 Build-a-Web. FBLA Website Design.</p>
+  </div>
+</footer>
+
+<!-- Back to Top -->
+<button class="back-to-top" aria-label="Back to top">
+  <i class="fa-solid fa-arrow-up" aria-hidden="true"></i> Top
+</button>
+
+<script src="script.js"></script>
+</body>
+</html>

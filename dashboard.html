@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Track your learning progress, badges, quiz scores, and activity on the Build-a-Web student dashboard." />
+  <title>Dashboard | Build-a-Web</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    /* Dashboard-specific tweaks */
+    .dash-section-title {
+      font-family: var(--font-serif);
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: var(--charcoal);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .dash-section-title i { color: var(--sage); font-size: 1rem; }
+
+    .dash-panel {
+      background: var(--white);
+      border-radius: var(--radius-card);
+      box-shadow: var(--card-shadow);
+      padding: 28px;
+    }
+
+    /* Quiz results table responsive */
+    .table-wrapper { overflow-x: auto; }
+
+    /* Path section scroll hint */
+    .path-scroll-hint {
+      font-size: 0.78rem;
+      color: var(--gray-light);
+      margin-bottom: 8px;
+      display: none;
+    }
+    @media(max-width:768px){ .path-scroll-hint { display:block; } }
+  </style>
+</head>
+<body data-dashboard="true">
+
+<!-- NAV -->
+<nav class="nav" role="navigation" aria-label="Main navigation">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5"/>
+        <path d="M12 3C12 3 8 7 8 12C8 17 12 21 12 21" stroke="currentColor" stroke-width="1.5"/>
+        <path d="M12 3C12 3 16 7 16 12C16 17 12 21 12 21" stroke="currentColor" stroke-width="1.5"/>
+        <line x1="3" y1="12" x2="21" y2="12" stroke="currentColor" stroke-width="1.5"/>
+        <line x1="4.5" y1="7.5" x2="19.5" y2="7.5" stroke="currentColor" stroke-width="1.5"/>
+        <line x1="4.5" y1="16.5" x2="19.5" y2="16.5" stroke="currentColor" stroke-width="1.5"/>
+      </svg>
+      Build-a-Web
+    </a>
+    <ul class="nav-links" role="list">
+      <li><a href="index.html" class="nav-link">Home</a></li>
+      <li><a href="schedule.html" class="nav-link">Schedule</a></li>
+      <li><a href="dashboard.html" class="nav-link">Dashboard</a></li>
+      <li><a href="resources.html" class="nav-link">Resources</a></li>
+      <li><a href="about.html" class="nav-link">About</a></li>
+      <li><a href="resources.html" class="nav-link nav-cta">Start Learning</a></li>
+    </ul>
+    <button class="nav-hamburger" aria-label="Open menu"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+<div class="nav-overlay"></div>
+<nav class="nav-drawer">
+  <a href="index.html" class="drawer-link">Home</a>
+  <a href="schedule.html" class="drawer-link">Schedule</a>
+  <a href="dashboard.html" class="drawer-link">Dashboard</a>
+  <a href="resources.html" class="drawer-link">Resources</a>
+  <a href="about.html" class="drawer-link">About</a>
+</nav>
+
+
+<!-- HERO -->
+<section class="hero hero-pattern-cross" style="min-height:44vh" aria-label="Dashboard hero">
+  <div class="hero-bg">
+    <div class="hero-bg-pattern"></div>
+    <div class="blob blob-1" style="background:#d4e8d4"></div>
+    <div class="blob blob-2" style="background:#fceef5"></div>
+    <div class="blob blob-3" style="background:#ede8f5"></div>
+    <div class="blob blob-4" style="background:#fdf0e8"></div>
+  </div>
+  <canvas class="particle-canvas" id="dashboard-particles" aria-hidden="true"></canvas>
+  <div class="container hero-content" style="width:100%">
+    <div style="padding:100px 0 48px; max-width:640px">
+      <div class="hero-text">
+        <span class="hero-label">Your Progress</span>
+        <h1 class="hero-title">Student Dashboard</h1>
+        <p class="hero-subtitle">Track your lessons, achievements, quiz scores, and upcoming sessions — all in one place.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<svg class="wave-divider" viewBox="0 0 1440 60" preserveAspectRatio="none" aria-hidden="true">
+  <path d="M0,20 C480,60 960,0 1440,40 L1440,60 L0,60 Z" fill="#fdf6ec"/>
+</svg>
+
+
+<!-- DASHBOARD CONTENT -->
+<main class="section bg-cream" id="main-content">
+  <div class="container">
+
+    <!-- Welcome Banner -->
+    <div class="welcome-banner reveal" style="margin-bottom:40px">
+      <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px">
+        <div>
+          <h2>Welcome back, Alex <span style="font-style:italic;opacity:0.7;font-size:1.2rem">— keep it up!</span></h2>
+          <p class="date" id="dash-date"></p>
+        </div>
+        <a href="resources.html" class="btn btn-primary btn-sm">
+          <i class="fa-solid fa-play" aria-hidden="true"></i> Continue Learning
+        </a>
+      </div>
+    </div>
+
+
+    <!-- STAT RING CARDS -->
+    <div class="grid-4" style="margin-bottom:48px" role="region" aria-label="Learning statistics">
+      <div class="card stat-ring-card reveal">
+        <div class="ring-container" role="img" aria-label="Lessons completed: 4 of 6">
+          <svg class="ring-svg" viewBox="0 0 80 80" aria-hidden="true">
+            <circle class="ring-track" cx="40" cy="40" r="32"/>
+            <circle class="ring-progress" cx="40" cy="40" r="32" stroke="#8aab8a" data-progress="67"/>
+          </svg>
+          <div class="ring-label">4/6</div>
+        </div>
+        <h4>Lessons</h4>
+        <div class="stat-val">4 Completed</div>
+      </div>
+
+      <div class="card stat-ring-card reveal reveal-delay-1">
+        <div class="ring-container" role="img" aria-label="Quizzes passed: 3 of 3">
+          <svg class="ring-svg" viewBox="0 0 80 80" aria-hidden="true">
+            <circle class="ring-track" cx="40" cy="40" r="32"/>
+            <circle class="ring-progress" cx="40" cy="40" r="32" stroke="#9b8ec4" data-progress="100"/>
+          </svg>
+          <div class="ring-label">3/3</div>
+        </div>
+        <h4>Quizzes</h4>
+        <div class="stat-val">All Passed</div>
+      </div>
+
+      <div class="card stat-ring-card reveal reveal-delay-2">
+        <div class="ring-container" role="img" aria-label="Sessions attended: 2 of 4">
+          <svg class="ring-svg" viewBox="0 0 80 80" aria-hidden="true">
+            <circle class="ring-track" cx="40" cy="40" r="32"/>
+            <circle class="ring-progress" cx="40" cy="40" r="32" stroke="#c9808a" data-progress="50"/>
+          </svg>
+          <div class="ring-label">2/4</div>
+        </div>
+        <h4>Sessions</h4>
+        <div class="stat-val">2 Attended</div>
+      </div>
+
+      <div class="card stat-ring-card reveal reveal-delay-3">
+        <div class="ring-container" role="img" aria-label="Badges earned: 5">
+          <svg class="ring-svg" viewBox="0 0 80 80" aria-hidden="true">
+            <circle class="ring-track" cx="40" cy="40" r="32"/>
+            <circle class="ring-progress" cx="40" cy="40" r="32" stroke="#e8a87c" data-progress="83"/>
+          </svg>
+          <div class="ring-label">5</div>
+        </div>
+        <h4>Badges</h4>
+        <div class="stat-val">5 Earned</div>
+      </div>
+    </div>
+
+
+    <!-- LEARNING PATH -->
+    <div class="dash-panel reveal" style="margin-bottom:48px; overflow:hidden" role="region" aria-label="Learning path">
+      <h3 class="dash-section-title"><i class="fa-solid fa-route" aria-hidden="true"></i> Learning Path</h3>
+      <p class="path-scroll-hint">Scroll right to see your full learning path.</p>
+      <div class="learning-path" role="list">
+        <div class="path-line" aria-hidden="true"></div>
+
+        <div class="path-node" role="listitem" aria-label="HTML Structure — completed">
+          <div class="path-node-tooltip">HTML Structure</div>
+          <div class="path-node-circle completed">
+            <i class="fa-solid fa-check" aria-hidden="true"></i>
+          </div>
+          <div class="path-node-label">HTML Structure</div>
+        </div>
+
+        <div class="path-node" role="listitem" aria-label="CSS Box Model — completed">
+          <div class="path-node-tooltip">CSS Box Model</div>
+          <div class="path-node-circle completed">
+            <i class="fa-solid fa-check" aria-hidden="true"></i>
+          </div>
+          <div class="path-node-label">CSS Box Model</div>
+        </div>
+
+        <div class="path-node" role="listitem" aria-label="CSS Flexbox — completed">
+          <div class="path-node-tooltip">CSS Flexbox</div>
+          <div class="path-node-circle completed">
+            <i class="fa-solid fa-check" aria-hidden="true"></i>
+          </div>
+          <div class="path-node-label">CSS Flexbox</div>
+        </div>
+
+        <div class="path-node" role="listitem" aria-label="JavaScript Basics — completed">
+          <div class="path-node-tooltip">JavaScript Basics</div>
+          <div class="path-node-circle completed">
+            <i class="fa-solid fa-check" aria-hidden="true"></i>
+          </div>
+          <div class="path-node-label">JS Basics</div>
+        </div>
+
+        <div class="path-node" role="listitem" aria-label="DOM Manipulation — current lesson">
+          <div class="path-node-tooltip">DOM Manipulation — In Progress</div>
+          <div class="path-node-circle current">
+            <i class="fa-solid fa-code" aria-hidden="true"></i>
+          </div>
+          <div class="path-node-label">DOM Manipulation</div>
+        </div>
+
+        <div class="path-node" role="listitem" aria-label="Responsive Design — upcoming">
+          <div class="path-node-tooltip">Responsive Design — Upcoming</div>
+          <div class="path-node-circle upcoming">
+            <i class="fa-solid fa-mobile-screen-button" aria-hidden="true"></i>
+          </div>
+          <div class="path-node-label muted">Responsive Design</div>
+        </div>
+
+      </div>
+    </div>
+
+
+    <!-- BADGES + ACTIVITY — two columns -->
+    <div class="grid-2" style="margin-bottom:48px; align-items:start">
+
+      <!-- BADGES -->
+      <div role="region" aria-labelledby="badges-heading">
+        <h3 class="dash-section-title" id="badges-heading">
+          <i class="fa-solid fa-award" aria-hidden="true"></i> Badges &amp; Achievements
+        </h3>
+        <div class="badge-grid" style="grid-template-columns:repeat(3,1fr)">
+
+          <div class="badge-card reveal">
+            <div class="badge-card-header" style="background:linear-gradient(135deg,#e8f0e9,#d4e4d4)">
+              <i class="fa-solid fa-file-code" style="color:var(--sage)" aria-hidden="true"></i>
+            </div>
+            <div class="badge-card-body">
+              <div class="badge-name">First Tag</div>
+              <div class="badge-desc">Wrote your first HTML element</div>
+            </div>
+          </div>
+
+          <div class="badge-card reveal reveal-delay-1">
+            <div class="badge-card-header" style="background:linear-gradient(135deg,#ede8f5,#ddd4f0)">
+              <i class="fa-solid fa-palette" style="color:var(--lavender)" aria-hidden="true"></i>
+            </div>
+            <div class="badge-card-body">
+              <div class="badge-name">Style Star</div>
+              <div class="badge-desc">Completed the CSS Box Model</div>
+            </div>
+          </div>
+
+          <div class="badge-card reveal reveal-delay-2">
+            <div class="badge-card-header" style="background:linear-gradient(135deg,#fdf0e8,#f8e0d0)">
+              <i class="fa-solid fa-arrows-to-circle" style="color:var(--peach)" aria-hidden="true"></i>
+            </div>
+            <div class="badge-card-body">
+              <div class="badge-name">Flex Master</div>
+              <div class="badge-desc">Mastered CSS Flexbox layouts</div>
+            </div>
+          </div>
+
+          <div class="badge-card reveal">
+            <div class="badge-card-header" style="background:linear-gradient(135deg,#fceef5,#f0d8e8)">
+              <i class="fa-brands fa-js" style="color:var(--dusty-rose)" aria-hidden="true"></i>
+            </div>
+            <div class="badge-card-body">
+              <div class="badge-name">JS Starter</div>
+              <div class="badge-desc">Completed JavaScript Basics</div>
+            </div>
+          </div>
+
+          <div class="badge-card reveal reveal-delay-1">
+            <div class="badge-card-header" style="background:linear-gradient(135deg,#e8f0e9,#c8e0c8)">
+              <i class="fa-solid fa-users" style="color:#5a8a5a" aria-hidden="true"></i>
+            </div>
+            <div class="badge-card-body">
+              <div class="badge-name">Team Player</div>
+              <div class="badge-desc">Joined your first study group</div>
+            </div>
+          </div>
+
+          <div class="badge-card locked reveal reveal-delay-2" aria-label="DOM Wizard badge — locked">
+            <div class="badge-card-header" style="background:linear-gradient(135deg,#f0f0f0,#e0e0e0)">
+              <i class="fa-solid fa-wand-magic-sparkles" style="color:#aaa" aria-hidden="true"></i>
+              <div class="badge-lock-overlay">
+                <i class="fa-solid fa-lock" aria-hidden="true"></i>
+              </div>
+            </div>
+            <div class="badge-card-body">
+              <div class="badge-name">DOM Wizard</div>
+              <div class="badge-desc">Complete DOM Manipulation</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ACTIVITY TIMELINE -->
+      <div role="region" aria-labelledby="activity-heading">
+        <h3 class="dash-section-title" id="activity-heading">
+          <i class="fa-solid fa-clock-rotate-left" aria-hidden="true"></i> Recent Activity
+        </h3>
+        <div class="dash-panel">
+          <div class="activity-list" role="list">
+
+            <div class="activity-item" role="listitem">
+              <div class="activity-dot" style="background:var(--sage)" aria-hidden="true"></div>
+              <div class="activity-content">
+                <div class="title">Started DOM Manipulation lesson</div>
+                <div class="time">Today, 2:15 PM</div>
+              </div>
+            </div>
+
+            <div class="activity-item" role="listitem">
+              <div class="activity-dot" style="background:var(--lavender)" aria-hidden="true"></div>
+              <div class="activity-content">
+                <div class="title">Passed JavaScript Basics Quiz — 5/5</div>
+                <div class="time">Yesterday, 4:40 PM</div>
+              </div>
+            </div>
+
+            <div class="activity-item" role="listitem">
+              <div class="activity-dot" style="background:var(--peach)" aria-hidden="true"></div>
+              <div class="activity-content">
+                <div class="title">Registered for HTML Forms &amp; Accessibility</div>
+                <div class="time">Mar 8, 11:20 AM</div>
+              </div>
+            </div>
+
+            <div class="activity-item" role="listitem">
+              <div class="activity-dot" style="background:var(--sage)" aria-hidden="true"></div>
+              <div class="activity-content">
+                <div class="title">Completed JavaScript Basics lesson</div>
+                <div class="time">Mar 7, 3:55 PM</div>
+              </div>
+            </div>
+
+            <div class="activity-item" role="listitem">
+              <div class="activity-dot" style="background:var(--dusty-rose)" aria-hidden="true"></div>
+              <div class="activity-content">
+                <div class="title">Earned the "JS Starter" badge</div>
+                <div class="time">Mar 7, 3:56 PM</div>
+              </div>
+            </div>
+
+            <div class="activity-item" role="listitem">
+              <div class="activity-dot" style="background:var(--lavender)" aria-hidden="true"></div>
+              <div class="activity-content">
+                <div class="title">Passed CSS Styling Quiz — 4/5</div>
+                <div class="time">Mar 5, 5:10 PM</div>
+              </div>
+            </div>
+
+            <div class="activity-item" role="listitem">
+              <div class="activity-dot" style="background:var(--sage)" aria-hidden="true"></div>
+              <div class="activity-content">
+                <div class="title">Completed CSS Flexbox lesson</div>
+                <div class="time">Mar 4, 2:30 PM</div>
+              </div>
+            </div>
+
+            <div class="activity-item" role="listitem">
+              <div class="activity-dot" style="background:var(--peach)" aria-hidden="true"></div>
+              <div class="activity-content">
+                <div class="title">Attended CSS Layouts &amp; Flexbox Tutoring</div>
+                <div class="time">Mar 2, 4:00 PM</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /grid-2 -->
+
+
+    <!-- QUIZ RESULTS TABLE -->
+    <div role="region" aria-labelledby="results-heading">
+      <h3 class="dash-section-title" id="results-heading">
+        <i class="fa-solid fa-table-list" aria-hidden="true"></i> Quiz Results
+      </h3>
+      <div class="dash-panel reveal">
+        <div class="table-wrapper">
+          <table class="results-table" aria-label="Quiz scores">
+            <thead>
+              <tr>
+                <th scope="col">Quiz</th>
+                <th scope="col">Score</th>
+                <th scope="col">Date Taken</th>
+                <th scope="col">Duration</th>
+                <th scope="col">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>HTML Basics Quiz</strong></td>
+                <td>5 / 5</td>
+                <td>March 2, 2026</td>
+                <td>4 min</td>
+                <td><span class="score-pill score-pass"><i class="fa-solid fa-check" aria-hidden="true"></i> Passed</span></td>
+              </tr>
+              <tr>
+                <td><strong>CSS Styling Quiz</strong></td>
+                <td>4 / 5</td>
+                <td>March 5, 2026</td>
+                <td>6 min</td>
+                <td><span class="score-pill score-pass"><i class="fa-solid fa-check" aria-hidden="true"></i> Passed</span></td>
+              </tr>
+              <tr>
+                <td><strong>JavaScript Fundamentals Quiz</strong></td>
+                <td>5 / 5</td>
+                <td>March 7, 2026</td>
+                <td>5 min</td>
+                <td><span class="score-pill score-pass"><i class="fa-solid fa-check" aria-hidden="true"></i> Passed</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div style="margin-top:16px; display:flex; align-items:center; gap:10px; font-size:0.85rem; color:var(--gray-mid)">
+          <i class="fa-solid fa-circle-info" style="color:var(--lavender)" aria-hidden="true"></i>
+          A score of 60% or above counts as a passing grade for all Build-a-Web quizzes.
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /container -->
+</main>
+
+
+<!-- FOOTER -->
+<svg class="footer-wave" viewBox="0 0 1440 60" preserveAspectRatio="none" aria-hidden="true">
+  <path d="M0,30 C360,60 1080,0 1440,30 L1440,60 L0,60 Z" fill="var(--sage-light)"/>
+</svg>
+<footer class="footer" role="contentinfo">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <a href="index.html" class="footer-logo">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="12" cy="12" r="9" stroke="var(--sage)" stroke-width="1.5"/>
+          <path d="M12 3C12 3 8 7 8 12C8 17 12 21 12 21" stroke="var(--sage)" stroke-width="1.5"/>
+          <path d="M12 3C12 3 16 7 16 12C16 17 12 21 12 21" stroke="var(--sage)" stroke-width="1.5"/>
+          <line x1="3" y1="12" x2="21" y2="12" stroke="var(--sage)" stroke-width="1.5"/>
+        </svg>Build-a-Web
+      </a>
+      <p>A student-made learning hub teaching HTML, CSS, and JavaScript to high school students everywhere.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Pages</h4>
+      <ul role="list">
+        <li><a href="index.html">Home</a></li><li><a href="schedule.html">Schedule</a></li>
+        <li><a href="dashboard.html">Dashboard</a></li><li><a href="resources.html">Resources</a></li>
+        <li><a href="about.html">About</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <div class="footer-contact-item"><i class="fa-solid fa-envelope" aria-hidden="true"></i> hello@buildaweb.edu</div>
+      <div class="footer-contact-item"><i class="fa-solid fa-location-dot" aria-hidden="true"></i> FBLA 2025–2026</div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p class="footer-tagline">Built with care by students, for students.</p>
+    <p class="footer-copy">&copy; 2026 Build-a-Web. FBLA Website Design.</p>
+  </div>
+</footer>
+
+<button class="back-to-top" aria-label="Back to top"><i class="fa-solid fa-arrow-up" aria-hidden="true"></i> Top</button>
+
+<script src="script.js"></script>
+<script>
+  // Set current date
+  document.getElementById('dash-date').textContent = new Date().toLocaleDateString('en-US', {
+    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+  });
+
+  // Fire confetti on dashboard load (soft pastel, not loud)
+  window.addEventListener('load', () => {
+    setTimeout(() => launchConfetti(), 600);
+  });
+</script>
+</body>
+</html>
