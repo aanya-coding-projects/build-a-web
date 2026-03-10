@@ -45,6 +45,7 @@
       color: white;
       flex-shrink: 0;
       box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+      object-fit: cover;
     }
 
     .tutor-card-info { flex: 1; }
@@ -169,6 +170,7 @@
       font-size: 1.2rem;
       font-weight: 700;
       color: white;
+      object-fit: cover;
     }
     .booking-tutor-name { font-weight: 600; font-size: 1rem; color: var(--charcoal); }
     .booking-tutor-title { font-size: 0.82rem; color: var(--gray-mid); }
@@ -437,7 +439,7 @@
       <!-- ── TUTOR 1: Maya Chen ──────────────────────── -->
       <article class="tutor-card reveal" aria-labelledby="tutor-maya-name">
         <div class="tutor-card-header">
-          <div class="tutor-avatar" style="background:linear-gradient(135deg,#8aab8a,#6a8b6a)" aria-hidden="true">M</div>
+          <img class="tutor-avatar" src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=136&h=136&fit=crop&q=80" alt="Maya Chen" />
           <div class="tutor-card-info">
             <div class="tutor-name" id="tutor-maya-name">Maya Chen</div>
             <div class="tutor-grade">11th Grade · Jefferson High</div>
@@ -501,7 +503,7 @@
       <!-- ── TUTOR 2: Jordan Park ───────────────────── -->
       <article class="tutor-card reveal reveal-delay-1" aria-labelledby="tutor-jordan-name">
         <div class="tutor-card-header">
-          <div class="tutor-avatar" style="background:linear-gradient(135deg,#9b8ec4,#7b6ea4)" aria-hidden="true">J</div>
+          <img class="tutor-avatar" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=136&h=136&fit=crop&q=80" alt="Jordan Park" />
           <div class="tutor-card-info">
             <div class="tutor-name" id="tutor-jordan-name">Jordan Park</div>
             <div class="tutor-grade">12th Grade · Roosevelt Academy</div>
@@ -565,7 +567,7 @@
       <!-- ── TUTOR 3: Priya Nair ────────────────────── -->
       <article class="tutor-card reveal" aria-labelledby="tutor-priya-name">
         <div class="tutor-card-header">
-          <div class="tutor-avatar" style="background:linear-gradient(135deg,#c9808a,#a86070)" aria-hidden="true">P</div>
+          <img class="tutor-avatar" src="https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?w=136&h=136&fit=crop&q=80" alt="Priya Nair" />
           <div class="tutor-card-info">
             <div class="tutor-name" id="tutor-priya-name">Priya Nair</div>
             <div class="tutor-grade">12th Grade · Lincoln Prep</div>
@@ -629,7 +631,7 @@
       <!-- ── TUTOR 4: Alex Rivera ───────────────────── -->
       <article class="tutor-card reveal reveal-delay-1" aria-labelledby="tutor-alex-name">
         <div class="tutor-card-header">
-          <div class="tutor-avatar" style="background:linear-gradient(135deg,#e8a87c,#c8885c)" aria-hidden="true">A</div>
+          <img class="tutor-avatar" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=136&h=136&fit=crop&q=80" alt="Alex Rivera" />
           <div class="tutor-card-info">
             <div class="tutor-name" id="tutor-alex-name">Alex Rivera</div>
             <div class="tutor-grade">11th Grade · Westbrook High</div>
@@ -705,7 +707,7 @@
       <button class="modal-close" aria-label="Close modal"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
     </div>
     <div class="booking-tutor-header">
-      <div class="booking-tutor-avatar" style="background:linear-gradient(135deg,#8aab8a,#6a8b6a)" aria-hidden="true">M</div>
+      <img class="booking-tutor-avatar" src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=96&h=96&fit=crop&q=80" alt="Maya Chen" />
       <div>
         <div class="booking-tutor-name">Maya Chen</div>
         <div class="booking-tutor-title">HTML &amp; CSS Specialist · 11th Grade</div>
@@ -779,7 +781,7 @@
       <button class="modal-close" aria-label="Close modal"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
     </div>
     <div class="booking-tutor-header">
-      <div class="booking-tutor-avatar" style="background:linear-gradient(135deg,#9b8ec4,#7b6ea4)" aria-hidden="true">J</div>
+      <img class="booking-tutor-avatar" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=96&h=96&fit=crop&q=80" alt="Jordan Park" />
       <div>
         <div class="booking-tutor-name">Jordan Park</div>
         <div class="booking-tutor-title">CSS Layout &amp; Accessibility Expert · 12th Grade</div>
@@ -853,7 +855,7 @@
       <button class="modal-close" aria-label="Close modal"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
     </div>
     <div class="booking-tutor-header">
-      <div class="booking-tutor-avatar" style="background:linear-gradient(135deg,#c9808a,#a86070)" aria-hidden="true">P</div>
+      <img class="booking-tutor-avatar" src="https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?w=96&h=96&fit=crop&q=80" alt="Priya Nair" />
       <div>
         <div class="booking-tutor-name">Priya Nair</div>
         <div class="booking-tutor-title">CSS Animations &amp; Design Systems · 12th Grade</div>
@@ -927,7 +929,7 @@
       <button class="modal-close" aria-label="Close modal"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
     </div>
     <div class="booking-tutor-header">
-      <div class="booking-tutor-avatar" style="background:linear-gradient(135deg,#e8a87c,#c8885c)" aria-hidden="true">A</div>
+      <img class="booking-tutor-avatar" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=96&h=96&fit=crop&q=80" alt="Alex Rivera" />
       <div>
         <div class="booking-tutor-name">Alex Rivera</div>
         <div class="booking-tutor-title">JavaScript &amp; DOM Specialist · 11th Grade</div>
