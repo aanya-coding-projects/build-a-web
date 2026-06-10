@@ -2,7 +2,7 @@
 
 **Live:** https://build-a-web.vercel.app/index.html
 
-A job board platform built for high school students and their counselors to simplify the job search process. Developed for the FBLA National Leadership Conference — **5th place nationally, 4th in North Carolina**.
+A job board platform built for high school students and their counselors to simplify the job search process. Developed for the FBLA National Leadership Conference — **2nd Place in North Carolina, Nationals soon**.
 
 ## Features
 
