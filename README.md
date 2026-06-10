@@ -1,29 +1,25 @@
-# School Job Board
+# Build-a-Web
 
 **Live:** https://build-a-web.vercel.app/index.html
 
-A job board platform built for high school students and their counselors to simplify the job search process. Developed for the FBLA National Leadership Conference — **2nd Place in North Carolina, Nationals soon**.
+A student-made learning hub teaching HTML, CSS, and JavaScript to high school students. Built for the FBLA 2026 *Website Design & Development* competitive event — **2nd place at NC States, FBLA Nationals competitor**.
 
 ## Features
 
-- **Student portal** — Browse and apply to curated, age-appropriate job listings
-- **Employer posting** — Employers submit job listings for backend review
-- **Counselor dashboard** — Approve or reject employer submissions and monitor applications
-- **Authentication** — Input validation and role-based access for students, employers, and counselors
-- **Curriculum resources** — Study materials organized by unit and difficulty level
+- **Curriculum** — Structured web development lessons organized by unit and difficulty
 - **Peer tutoring** — Browse tutors and book one-on-one sessions
-- **Schedule** — Conference schedule and session browser
+- **Schedule** — Upcoming sessions with a mini-card calendar view
+- **Student dashboard** — Track progress and upcoming sessions
+- **Resources** — Supplemental learning materials by topic
 
 ## Tech Stack
 
-- HTML, CSS (Flexbox, Grid)
+- HTML, CSS (custom properties, Flexbox, Grid)
 - JavaScript (vanilla)
-- SQLite + Prisma ORM
+- Font Awesome icons
 - Deployed on Vercel
 
 ## Run Locally
-
-No build step required. Open `index.html` in a browser or use a local static server:
 
 ```bash
 npx serve .
@@ -31,4 +27,4 @@ npx serve .
 
 ## Background
 
-Built for the 2025–2026 FBLA (Future Business Leaders of America) competitive event *Website Design & Development*. The platform was designed to serve 3,600+ students at a single school, centralizing student-friendly job listings to reduce age discrimination and simplify the search process.
+Developed for the 2025–2026 FBLA competitive season. Placed **2nd at NC States** and qualified for FBLA Nationals.
